@@ -15,7 +15,7 @@ import { useRecipe } from "./KitchenContext"; // Update import path if necessary
 import { RecipeItem } from "./airtable/Recipe";
 import { AddRecipe } from "./AddRecipe";
 
-export const Sidebar = (props: StackProps) => {
+export const RecipeSidebar = (props: StackProps) => {
   const { recipes, selectedRecipe, setSelectedRecipe, loading, error } =
     useRecipe(); // Destructure the necessary state and functions from context
 

@@ -1,4 +1,4 @@
-import Airtable from "airtable";
+import { airtable, Airtable, Select } from "./Airtable";
 
 // Define an interface for the Airtable record fields for the "Shopping" table
 interface ShoppingItem {
@@ -9,15 +9,20 @@ interface ShoppingItem {
   bought?: boolean; // Checkbox indicating whether the item was bought
   recipeIds?: string[]; // Array of linked record IDs from the Recipes table
 }
-
-interface Select {
-  maxRecords?: number;
+interface AirtableRecord {
+  id: string;
+  fields: Omit<ShoppingItem, "id">;
 }
 
-// Airtable configuration with TypeScript typing for the environment variables
-const airtableBase = new Airtable({
-  apiKey: process.env.REACT_APP_AIRTABLE_API_KEY as string,
-}).base(process.env.REACT_APP_AIRTABLE_BASE as string);
+interface AirtableCreateRecord {
+  fields: Omit<ShoppingItem, "id">;
+}
+
+interface AirtableBatchData {
+  ingredientsToUpdate?: AirtableRecord[];
+  ingredientsToAdd?: AirtableCreateRecord[];
+  ingredientsToRemove?: string[];
+}
 
 /**
  * Fetches shopping item records from the "Shopping" table with optional filters.
@@ -29,7 +34,7 @@ async function getShoppingRecords(
 ): Promise<ShoppingItem[]> {
   const recordsList: ShoppingItem[] = [];
   return new Promise((resolve, reject) => {
-    airtableBase("Shopping") // Specific table name for clarity and reusability
+    airtable("Shopping") // Specific table name for clarity and reusability
       .select(filters || {})
       .eachPage(
         function page(records, fetchNextPage) {
@@ -57,5 +62,74 @@ async function getShoppingRecords(
   });
 }
 
+// function processAirtableBatch(
+//   operation: string,
+//   records: any[],
+//   doneCallback: (err: any, records?: AirtableBatchData[]) => void
+// ) {
+//   let recordChunks = [];
+//   for (let i = 0; i < records.length; i += 10) {
+//     recordChunks.push(records.slice(i, i + 10));
+//   }
+
+//   recordChunks.forEach((chunk) => {
+//     switch (operation) {
+//       case "create":
+//         airtable("Shopping").create(chunk, doneCallback);
+//         break;
+//       case "update":
+//         airtable("Shopping").update(chunk, doneCallback);
+//         break;
+//       case "destroy":
+//         airtable("Shopping").destroy(chunk, doneCallback);
+//         break;
+//       default:
+//         console.error("Unsupported operation");
+//     }
+//   });
+// }
+
+// function insertToAirtable(data: {
+//   ingredientsToUpdate?: any[];
+//   ingredientsToAdd?: any[];
+//   ingredientsToRemove?: any[];
+// }) {
+//   if (data.ingredientsToUpdate && data.ingredientsToUpdate.length) {
+//     processAirtableBatch("update", data.ingredientsToUpdate, (err, records) => {
+//       if (err) {
+//         console.error("Update Error:", err);
+//         return;
+//       }
+//       records.forEach((record) => console.log("Updated:", record.getId()));
+//     });
+//   }
+
+//   if (data.ingredientsToAdd && data.ingredientsToAdd.length) {
+//     processAirtableBatch("create", data.ingredientsToAdd, (err, records) => {
+//       if (err) {
+//         console.error("Create Error:", err);
+//         return;
+//       }
+//       records.forEach((record) => console.log("Created:", record.getId()));
+//     });
+//   }
+
+//   if (data.ingredientsToRemove && data.ingredientsToRemove.length) {
+//     processAirtableBatch(
+//       "destroy",
+//       data.ingredientsToRemove,
+//       (err, deletedRecords) => {
+//         if (err) {
+//           console.error("Destroy Error:", err);
+//           return;
+//         }
+//         console.log("Deleted:", deletedRecords.length, "records");
+//       }
+//     );
+//   }
+// }
+
 // Export the function for use in other components
 export { getShoppingRecords };
+
+export type { ShoppingItem };

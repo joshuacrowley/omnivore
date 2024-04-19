@@ -1,4 +1,3 @@
-// RecipeContext.js
 import React, {
   createContext,
   useState,
@@ -8,7 +7,7 @@ import React, {
 } from "react";
 import { getRecipeById, getRecipes } from "./airtable/Recipe";
 import { getShoppingRecords } from "./airtable/Shopping"; // Import your API functions
-import * as meal from "./airtable/Meal"; // Import your API functions
+import { getMeals } from "./airtable/Meal"; // Import your API functions
 
 const RecipeContext = createContext();
 
@@ -24,17 +23,13 @@ export const RecipeProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch and set recipes
   const fetchRecipes = useCallback(async () => {
     setLoading(true);
     try {
       const fetchedRecipes = await getRecipes();
-
       console.log("fetchedRecipes", fetchedRecipes);
       setRecipes(fetchedRecipes);
-
       setError(null);
-      // Optionally set the first recipe as the selected recipe if none is selected
       if (fetchedRecipes.length > 0 && !selectedRecipe) {
         setSelectedRecipe(fetchedRecipes[0]);
       }
@@ -43,6 +38,32 @@ export const RecipeProvider = ({ children }) => {
     }
     setLoading(false);
   }, [selectedRecipe]);
+
+  const fetchShoppingRecords = useCallback(async () => {
+    setLoading(true);
+    try {
+      const records = await getShoppingRecords();
+      console.log("getShoppingRecords", records);
+      setShoppingList(records);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  }, []);
+
+  const fetchMeals = useCallback(async () => {
+    setLoading(true);
+    try {
+      const meals = await getMeals();
+      console.log("getMeals", meals);
+      setMealPlans(meals);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+    setLoading(false);
+  }, []);
 
   // Fetch and set a single recipe
   const fetchRecipeById = useCallback(async (id) => {
@@ -57,17 +78,16 @@ export const RecipeProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // useEffect hook to fetch recipes when the provider mounts
   useEffect(() => {
     fetchRecipes();
+    fetchShoppingRecords();
+    fetchMeals();
   }, []);
 
-  // Handle navigation selection
   const handleNavSelection = useCallback((navItem) => {
     setSelectedNav(navItem);
   }, []);
 
-  // Context provider value
   const providerValue = {
     recipes,
     mealPlans,
@@ -80,7 +100,8 @@ export const RecipeProvider = ({ children }) => {
     error,
     fetchRecipes,
     fetchRecipeById,
-    // Include all the remaining API functions here
+    fetchShoppingRecords,
+    fetchMeals,
     handleNavSelection,
   };
 

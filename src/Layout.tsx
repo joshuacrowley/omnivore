@@ -18,12 +18,15 @@ import {
 } from "./Column";
 import { Main } from "./Main";
 import { Navbar } from "./Navigation";
-import { Sidebar } from "./RecipesSidebar";
+import { RecipeSidebar } from "./RecipeSidebar";
+import { ShoppingSideBar } from "./ShoppingSideBar";
+import { useRecipe } from "./KitchenContext"; // Update import path if necessary
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { selectedNav } = useRecipe(); // Destructure the necessary state and functions from context
 
   return (
     <Flex height="100vh">
@@ -58,12 +61,14 @@ export const Layout = () => {
                   <Navbar onClose={onClose} />
                 </DrawerContent>
               </Drawer>
-              <ColumnHeading>Recipes</ColumnHeading>
+              <ColumnHeading>{selectedNav}</ColumnHeading>
             </HStack>
             <ColumnButton leftIcon={<FiRss />}>Airtable</ColumnButton>
           </HStack>
         </ColumnHeader>
-        <Sidebar />
+
+        {selectedNav === "Recipes" && <RecipeSidebar />}
+        {selectedNav === "Shopping" && <ShoppingSideBar />}
       </Box>
       <Box
         bg={useColorModeValue("white", "gray.900")}
