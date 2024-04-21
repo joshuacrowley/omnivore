@@ -9,7 +9,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FiArrowLeft, FiHeart, FiMenu, FiRss } from "react-icons/fi";
+import { FiArrowLeft, FiPlus, FiMenu, FiRss } from "react-icons/fi";
 import {
   ColumnButton,
   ColumnHeader,
@@ -20,13 +20,14 @@ import { Main } from "./Main";
 import { Navbar } from "./Navigation";
 import { RecipeSidebar } from "./RecipeSidebar";
 import { ShoppingSideBar } from "./ShoppingSideBar";
+import { MealsSidebar } from "./MealsSidebar";
 import { useRecipe } from "./KitchenContext"; // Update import path if necessary
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedNav } = useRecipe(); // Destructure the necessary state and functions from context
+  const { selectedNav, selectedRecipe } = useRecipe(); // Destructure the necessary state and functions from context
 
   return (
     <Flex height="100vh">
@@ -69,6 +70,7 @@ export const Layout = () => {
 
         {selectedNav === "Recipes" && <RecipeSidebar />}
         {selectedNav === "Shopping" && <ShoppingSideBar />}
+        {selectedNav === "Meal plan" && <MealsSidebar />}
       </Box>
       <Box
         bg={useColorModeValue("white", "gray.900")}
@@ -85,10 +87,12 @@ export const Layout = () => {
                 display={{ base: "inline-flex", md: "none" }}
               />
               {mainIsScrolled && (
-                <ColumnHeading>The shape of a cupcake</ColumnHeading>
+                <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
               )}
             </HStack>
-            <ColumnButton leftIcon={<FiHeart />}>12</ColumnButton>
+            <ColumnButton leftIcon={<FiPlus />}>
+              Add to meal plan and shopping
+            </ColumnButton>
           </HStack>
         </ColumnHeader>
         <Main maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />

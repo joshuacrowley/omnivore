@@ -59,6 +59,10 @@ export const RecipeProvider = ({ children }) => {
       console.log("getMeals", meals);
       setMealPlans(meals);
       setError(null);
+
+      if (meals.length > 0 && !selectedMealPlan) {
+        setSelectedMealPlan(meals[0]);
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -95,6 +99,7 @@ export const RecipeProvider = ({ children }) => {
     selectedRecipe,
     setSelectedRecipe,
     selectedMealPlan,
+    setSelectedMealPlan,
     selectedNav,
     loading,
     error,

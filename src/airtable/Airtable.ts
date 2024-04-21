@@ -8,6 +8,7 @@ export { Airtable };
 
 interface Select {
   maxRecords?: number;
+  fields?: string[];
 }
 
 export type { Select };
