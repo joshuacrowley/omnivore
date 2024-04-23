@@ -48,6 +48,7 @@ export const RecipeSidebar = (props: StackProps) => {
       py="3"
       {...props}
     >
+      <AddRecipe />
       {recipes.map((recipe: RecipeItem) => (
         <Link
           key={recipe.id}
@@ -75,7 +76,6 @@ export const RecipeSidebar = (props: StackProps) => {
           </Stack>
         </Link>
       ))}
-      <AddRecipe />
     </Stack>
   );
 };

@@ -9,19 +9,41 @@ interface ShoppingItem {
   bought?: boolean; // Checkbox indicating whether the item was bought
   recipeIds?: string[]; // Array of linked record IDs from the Recipes table
 }
-interface AirtableRecord {
-  id: string;
-  fields: Omit<ShoppingItem, "id">;
+
+interface ShoppingFields {
+  item: string;
+  quantity: string;
+  category: string;
+  bought?: boolean;
+  recipeIds?: string[];
 }
 
-interface AirtableCreateRecord {
+// Interface to represent a record as returned by Airtable with metadata
+interface AirtableRecord {
+  id: string;
+  createdTime: string;
+  fields: ShoppingItem;
+}
+
+// Interface for responses from Airtable containing multiple records
+interface AirtableResponse {
+  records: AirtableRecord[];
+}
+
+interface ShoppingCreate {
   fields: Omit<ShoppingItem, "id">;
 }
 
 interface AirtableBatchData {
   ingredientsToUpdate?: AirtableRecord[];
-  ingredientsToAdd?: AirtableCreateRecord[];
+  ingredientsToAdd?: ShoppingCreate[];
   ingredientsToRemove?: string[];
+}
+
+// Define an interface for updating a record in the "Shopping" table
+interface UpdateShoppingItem {
+  id: string;
+  fields: Partial<ShoppingItem>;
 }
 
 /**
@@ -60,6 +82,37 @@ async function getShoppingRecords(
         }
       );
   });
+}
+
+/**
+ * Updates a shopping item record in the "Shopping" table.
+ * @param {UpdateShoppingItem} updateData The ID of the item to update and the fields to be updated.
+ * @returns {Promise<ShoppingItem>} A promise resolving to the updated shopping item record.
+ */
+async function updateShoppingItem(
+  updateData: UpdateShoppingItem
+): Promise<ShoppingItem> {
+  try {
+    const updatedRecord = await airtable("Shopping").update([
+      {
+        id: updateData.id,
+        fields: updateData.fields,
+      },
+    ]);
+    const updatedItem: ShoppingItem = {
+      id: updatedRecord[0].id,
+      item: updatedRecord[0].fields.item as string,
+      quantity: updatedRecord[0].fields.quantity as string,
+      category: updatedRecord[0].fields.category as string,
+      bought: updatedRecord[0].fields.bought as boolean,
+      recipeIds: updatedRecord[0].fields.recipeIds as string[],
+    };
+    console.log(`Updated record ID: ${updatedItem.id}`);
+    return updatedItem;
+  } catch (error) {
+    console.error("Failed to update the record:", error);
+    throw error;
+  }
 }
 
 // function processAirtableBatch(
@@ -130,6 +183,13 @@ async function getShoppingRecords(
 // }
 
 // Export the function for use in other components
-export { getShoppingRecords };
+export { getShoppingRecords, updateShoppingItem };
 
-export type { ShoppingItem };
+export type {
+  ShoppingItem,
+  UpdateShoppingItem,
+  ShoppingCreate,
+  AirtableRecord,
+  AirtableResponse,
+  ShoppingFields,
+};

@@ -20,13 +20,41 @@ import {
 } from "@chakra-ui/react";
 import { RecipeItem } from "./airtable/Recipe";
 import { ShoppingItem } from "./airtable/Shopping";
-import { useRecipe } from "./KitchenContext"; // Update import path if necessary
+import { useRecipe } from "./KitchenContext";
+import { AddIngredients } from "./AddIngredients";
 
 export const ShoppingSideBar = (props: StackProps) => {
-  const { shoppingList, recipes, setSelectedRecipe, loading, error } =
-    useRecipe();
+  const {
+    shoppingList,
+    updateShoppingListItem,
+    recipes,
+    setSelectedRecipe,
+    setShoppingList,
+    loading,
+    error,
+  } = useRecipe();
   const [showBought, setShowBought] = useState(true);
 
+  const handleBoughtChange = (item: ShoppingItem, bought: boolean) => {
+    // Optimistically update the UI
+    const newShoppingList = shoppingList.map((shoppingItem: ShoppingItem) => {
+      if (shoppingItem.id === item.id) {
+        return { ...shoppingItem, bought: bought };
+      }
+      return shoppingItem;
+    });
+    // Update the context state immediately without waiting for airtable
+    setShoppingList(newShoppingList);
+
+    // Asynchronously update the backend
+    updateShoppingListItem({ id: item.id, fields: { bought } }).catch(
+      (error: any) => {
+        console.error("Failed to update item:", error);
+        // Optionally revert the change in the UI or show an error message
+        setShoppingList(shoppingList); // Revert to original state in case of an error
+      }
+    );
+  };
   // Helper function to find recipe names by ID
   const getRecipeName = (recipeId: string) => {
     const recipe = recipes.find((recipe: RecipeItem) => recipe.id === recipeId);
@@ -84,6 +112,7 @@ export const ShoppingSideBar = (props: StackProps) => {
       py="3"
       {...props}
     >
+      <AddIngredients />
       <Flex justifyContent={"space-between"}>
         <CircularProgress value={progressPercent}>
           <CircularProgressLabel>
@@ -91,7 +120,7 @@ export const ShoppingSideBar = (props: StackProps) => {
           </CircularProgressLabel>
         </CircularProgress>
 
-        <FormControl display="flex" alignItems="center">
+        <FormControl display="flex" alignItems="center" width={"auto"}>
           <FormLabel htmlFor="show-bought" mb="0">
             Show bought
           </FormLabel>
@@ -114,12 +143,7 @@ export const ShoppingSideBar = (props: StackProps) => {
               <Stack key={item.id} direction="row" align="center">
                 <Checkbox
                   isChecked={item.bought}
-                  onChange={(e) => {
-                    // Cast the event target type to access the 'checked' property
-                    const target = e.target as HTMLInputElement;
-                    // Update bought status in the shopping list state
-                    // updateItemBought(item.id, target.checked);
-                  }}
+                  onChange={(e) => handleBoughtChange(item, e.target.checked)}
                 >
                   {item.item} ({item.quantity})
                 </Checkbox>

@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { getRecipeById, getRecipes } from "./airtable/Recipe";
-import { getShoppingRecords } from "./airtable/Shopping"; // Import your API functions
+import { getShoppingRecords, updateShoppingItem } from "./airtable/Shopping"; // Import your API functions
 import { getMeals } from "./airtable/Meal"; // Import your API functions
 
 const RecipeContext = createContext();
@@ -40,7 +40,6 @@ export const RecipeProvider = ({ children }) => {
   }, [selectedRecipe]);
 
   const fetchShoppingRecords = useCallback(async () => {
-    setLoading(true);
     try {
       const records = await getShoppingRecords();
       console.log("getShoppingRecords", records);
@@ -49,7 +48,6 @@ export const RecipeProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
     }
-    setLoading(false);
   }, []);
 
   const fetchMeals = useCallback(async () => {
@@ -92,6 +90,25 @@ export const RecipeProvider = ({ children }) => {
     setSelectedNav(navItem);
   }, []);
 
+  const updateShoppingListItem = useCallback(
+    async (updateData) => {
+      try {
+        await updateShoppingItem(updateData);
+        await fetchShoppingRecords(); // Refresh the shopping list after updating
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    [fetchShoppingRecords]
+  );
+
+  useEffect(() => {
+    fetchRecipes();
+    fetchShoppingRecords();
+    fetchMeals();
+  }, []);
+
   const providerValue = {
     recipes,
     mealPlans,
@@ -100,6 +117,7 @@ export const RecipeProvider = ({ children }) => {
     setSelectedRecipe,
     selectedMealPlan,
     setSelectedMealPlan,
+    setShoppingList,
     selectedNav,
     loading,
     error,
@@ -108,6 +126,7 @@ export const RecipeProvider = ({ children }) => {
     fetchShoppingRecords,
     fetchMeals,
     handleNavSelection,
+    updateShoppingListItem,
   };
 
   return (

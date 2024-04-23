@@ -1,10 +1,5 @@
-import OpenAI from "openai";
+import { openai } from "./OpenAi";
 import { airtable } from "../airtable/Airtable";
-
-const openai = new OpenAI({
-  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
 
 // Function to create a prompt to send to the OpenAI API
 async function addRecipe(prompt) {
