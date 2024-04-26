@@ -23,6 +23,8 @@ import { ShoppingSideBar } from "./ShoppingSideBar";
 import { MealsSidebar } from "./MealsSidebar";
 import { useRecipe } from "./KitchenContext"; // Update import path if necessary
 
+import { ProcessMealPlanForm } from "./AddMeal";
+
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
@@ -90,9 +92,7 @@ export const Layout = () => {
                 <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
               )}
             </HStack>
-            <ColumnButton leftIcon={<FiPlus />}>
-              Add to meal plan and shopping
-            </ColumnButton>
+            <ProcessMealPlanForm />
           </HStack>
         </ColumnHeader>
         <Main maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />

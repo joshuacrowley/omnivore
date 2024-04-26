@@ -21,7 +21,7 @@ import {
 import { RecipeItem } from "./airtable/Recipe";
 import { ShoppingItem } from "./airtable/Shopping";
 import { useRecipe } from "./KitchenContext";
-import { AddIngredients } from "./AddIngredients";
+import AddIngredients from "./AddIngredients";
 
 export const ShoppingSideBar = (props: StackProps) => {
   const {

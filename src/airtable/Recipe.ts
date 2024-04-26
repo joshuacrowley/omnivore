@@ -1,27 +1,5 @@
 import { airtable, Airtable, Select } from "./Airtable";
-
-// Define an interface for attachment objects
-interface Attachment {
-  id: string;
-  url: string;
-  filename: string;
-  size: number;
-  type: string;
-  width?: number;
-  height?: number;
-  thumbnails?: {
-    small: {
-      url: string;
-      width: number;
-      height: number;
-    };
-    large: {
-      url: string;
-      width: number;
-      height: number;
-    };
-  };
-}
+import { FieldSet, Records, Attachment } from "airtable"; // Assuming FieldSet is available to import
 
 // Define an interface for the Airtable record fields for the "Recipes" table
 interface RecipeItem {
@@ -32,6 +10,16 @@ interface RecipeItem {
   serves?: number;
   photo?: Attachment[];
   recipeId?: string;
+  meals?: string[];
+  shopping?: string[];
+}
+
+interface CreateRecipeItem {
+  name: string;
+  ingredients: string;
+  method: string;
+  serves: number;
+  photo?: Attachment[];
   meals?: string[];
   shopping?: string[];
 }
@@ -103,7 +91,53 @@ async function getRecipeById(recipeId: string): Promise<RecipeItem | null> {
   }
 }
 
+/**
+ * Adds a new recipe item record in the "Recipes" table.
+ * @param {CreateRecipeItem} recipeData The data for the new recipe item to be created.
+ * @returns {Promise<RecipeItem>} A promise resolving to the newly created recipe item record.
+ */
+async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
+  try {
+    // Convert recipeData to a more generic type compatible with Airtable's expected input
+    const airtableData: FieldSet = {
+      name: recipeData.name,
+      ingredients: recipeData.ingredients,
+      method: recipeData.method,
+      serves: recipeData.serves,
+      photo: recipeData.photo, // Ensure this is formatted correctly for Airtable
+      meals: recipeData.meals,
+      shopping: recipeData.shopping,
+    };
+
+    const createdRecords: Records<FieldSet> = await airtable("Recipes").create([
+      { fields: airtableData },
+    ]);
+
+    if (createdRecords && createdRecords.length > 0) {
+      const record = createdRecords[0];
+      const newRecipe: RecipeItem = {
+        id: record.id,
+        name: record.fields.name as string,
+        ingredients: record.fields.ingredients as string,
+        method: record.fields.method as string,
+        serves: record.fields.serves as number,
+        photo: record.fields.photo as Attachment[],
+        recipeId: record.id,
+        meals: record.fields.meals as string[],
+        shopping: record.fields.shopping as string[],
+      };
+      console.log(`Created new recipe record ID: ${newRecipe.id}`);
+      return newRecipe;
+    } else {
+      throw new Error("No records were created.");
+    }
+  } catch (error) {
+    console.error("Failed to create the recipe item:", error);
+    throw error;
+  }
+}
+
 // Export the function for use in other components
-export { getRecipes, getRecipeById };
+export { getRecipes, getRecipeById, addRecipe };
 
 export type { RecipeItem };

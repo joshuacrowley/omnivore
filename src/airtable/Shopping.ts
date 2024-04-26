@@ -1,4 +1,5 @@
 import { airtable, Airtable, Select } from "./Airtable";
+import { FieldSet, Records } from "airtable"; // Assuming FieldSet is available to import
 
 // Define an interface for the Airtable record fields for the "Shopping" table
 interface ShoppingItem {
@@ -18,10 +19,17 @@ interface ShoppingFields {
   recipeIds?: string[];
 }
 
+interface CreateShoppingItem {
+  item: string;
+  quantity: string;
+  category: string;
+  bought?: boolean;
+  recipeIds?: string[];
+}
+
 // Interface to represent a record as returned by Airtable with metadata
 interface AirtableRecord {
   id: string;
-  createdTime: string;
   fields: ShoppingItem;
 }
 
@@ -115,6 +123,49 @@ async function updateShoppingItem(
   }
 }
 
+/**
+ * Adds a new shopping item record in the "Shopping" table.
+ * @param {CreateShoppingItem} shoppingData The data for the new shopping item to be created.
+ * @returns {Promise<ShoppingItem>} A promise resolving to the newly created shopping item record.
+ */
+async function addShoppingItem(
+  shoppingData: CreateShoppingItem
+): Promise<ShoppingItem> {
+  try {
+    // Convert shoppingData to a more generic type compatible with Airtable's expected input
+    const airtableData: FieldSet = {
+      item: shoppingData.item,
+      quantity: shoppingData.quantity,
+      category: shoppingData.category,
+      bought: shoppingData.bought,
+      recipeIds: shoppingData.recipeIds,
+    };
+
+    const createdRecords: Records<FieldSet> = await airtable("Shopping").create(
+      [{ fields: airtableData }]
+    );
+
+    if (createdRecords && createdRecords.length > 0) {
+      const record = createdRecords[0];
+      const newShoppingItem: ShoppingItem = {
+        id: record.id,
+        item: record.fields.item as string,
+        quantity: record.fields.quantity as string,
+        category: record.fields.category as string,
+        bought: record.fields.bought as boolean,
+        recipeIds: record.fields.recipeIds as string[],
+      };
+      console.log(`Created new shopping item record ID: ${newShoppingItem.id}`);
+      return newShoppingItem;
+    } else {
+      throw new Error("No records were created.");
+    }
+  } catch (error) {
+    console.error("Failed to create the shopping item:", error);
+    throw error;
+  }
+}
+
 // function processAirtableBatch(
 //   operation: string,
 //   records: any[],
@@ -183,7 +234,7 @@ async function updateShoppingItem(
 // }
 
 // Export the function for use in other components
-export { getShoppingRecords, updateShoppingItem };
+export { getShoppingRecords, updateShoppingItem, addShoppingItem };
 
 export type {
   ShoppingItem,

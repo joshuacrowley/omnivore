@@ -58,7 +58,7 @@ export const Main = (props: BoxProps) => {
 
   return (
     <Box as="main" {...props}>
-      {selectedNav === "Recipes" ? (
+      {selectedNav === ("Recipes" || "Shopping") ? (
         <>
           <Stack spacing="8">
             <Stack spacing="3">
