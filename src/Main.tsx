@@ -15,6 +15,8 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 import { useRecipe } from "./KitchenContext";
+import SpeakButton from "./Speak";
+import Ask from "./Ask";
 import Markdown from "markdown-to-jsx";
 
 const markdownOptions = {
@@ -72,9 +74,14 @@ export const Main = (props: BoxProps) => {
               maxW="65ch"
               color={mode("blackAlpha.800", "whiteAlpha.800")}
             >
+              <Ask questionContext={JSON.stringify(selectedRecipe)} />
               <Markdown>
                 {selectedRecipe.ingredients ?? "No ingredients"}
               </Markdown>
+              <SpeakButton
+                input={selectedRecipe.method}
+                label={"Read method"}
+              />
               <Markdown>{selectedRecipe.method ?? "No method"}</Markdown>
             </Stack>
           </Stack>
@@ -97,6 +104,9 @@ export const Main = (props: BoxProps) => {
               maxW="65ch"
               color={mode("blackAlpha.800", "whiteAlpha.800")}
             >
+              <Ask
+                questionContext={JSON.stringify(selectedMealPlan.runsheet)}
+              />
               <Markdown options={markdownOptions}>
                 {selectedMealPlan.runsheet ?? "No runsheet"}
               </Markdown>

@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useRecipe } from "./KitchenContext"; // Update import path if necessary
 import { RecipeItem } from "./airtable/Recipe";
-import { AddRecipe } from "./AddRecipe";
+import { AddRecipe } from "./AddRecipeWhisper";
 
 export const RecipeSidebar = (props: StackProps) => {
   const { recipes, selectedRecipe, setSelectedRecipe, loading, error } =

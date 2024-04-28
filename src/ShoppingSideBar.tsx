@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Link,
   Stack,
   StackProps,
@@ -112,7 +113,9 @@ export const ShoppingSideBar = (props: StackProps) => {
       py="3"
       {...props}
     >
-      <AddIngredients />
+      <Box hideBelow="md">
+        <AddIngredients />
+      </Box>
       <Flex justifyContent={"space-between"}>
         <CircularProgress value={progressPercent}>
           <CircularProgressLabel>

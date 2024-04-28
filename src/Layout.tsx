@@ -22,7 +22,7 @@ import { RecipeSidebar } from "./RecipeSidebar";
 import { ShoppingSideBar } from "./ShoppingSideBar";
 import { MealsSidebar } from "./MealsSidebar";
 import { useRecipe } from "./KitchenContext"; // Update import path if necessary
-
+import AddIngredients from "./AddIngredients";
 import { ProcessMealPlanForm } from "./AddMeal";
 
 export const Layout = () => {
@@ -84,17 +84,25 @@ export const Layout = () => {
           <HStack justify="space-between" width="full">
             <HStack spacing="3">
               <ColumnIconButton
+                onClick={onOpen}
                 aria-label="Navigate back"
                 icon={<FiArrowLeft />}
                 display={{ base: "inline-flex", md: "none" }}
               />
+
               {mainIsScrolled && (
                 <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
               )}
             </HStack>
-            <ProcessMealPlanForm />
+            {selectedNav === "Shopping" && <AddIngredients />}
+            {selectedNav === "Recipes" && <ProcessMealPlanForm />}
           </HStack>
         </ColumnHeader>
+
+        {selectedNav === "Shopping" && (
+          <ShoppingSideBar display={{ md: "none" }} />
+        )}
+
         <Main maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />
       </Box>
     </Flex>

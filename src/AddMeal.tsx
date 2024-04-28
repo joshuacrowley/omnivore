@@ -67,7 +67,7 @@ export const ProcessMealPlanForm = () => {
   return (
     <>
       <Button leftIcon={<FiPlus />} onClick={onOpen}>
-        Process Meal Plan
+        Add to Meal plan
       </Button>
       <Drawer
         isOpen={isOpen}
@@ -79,7 +79,7 @@ export const ProcessMealPlanForm = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Process Meal Plan</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Add to Meal plan</DrawerHeader>
 
           <DrawerBody>
             <Stack spacing="24px">
