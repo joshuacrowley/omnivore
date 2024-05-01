@@ -14,10 +14,12 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import { useRecipe } from "./KitchenContext";
-import SpeakButton from "./Speak";
-import Ask from "./Ask";
+import { useKitchen } from "../KitchenContext";
+import SpeakButton from "../components/Speak";
+import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
+import RecipePhoto from "../components/RecipePhoto";
+import { AddRecipe } from "../components/AddRecipeWhisper";
 
 const markdownOptions = {
   overrides: {
@@ -34,7 +36,7 @@ const markdownOptions = {
 
 export const Main = (props: BoxProps) => {
   const { selectedRecipe, selectedMealPlan, selectedNav, loading, error } =
-    useRecipe(); // Get the loading and error states from context
+    useKitchen(); // Get the loading and error states from context
 
   if (loading) {
     return (
@@ -64,6 +66,8 @@ export const Main = (props: BoxProps) => {
         <>
           <Stack spacing="8">
             <Stack spacing="3">
+              <RecipePhoto key={selectedRecipe.id} recipe={selectedRecipe} />
+
               <Heading as="h1" size="lg" color={mode("gray.700", "white")}>
                 {selectedRecipe.name}
               </Heading>
@@ -85,6 +89,8 @@ export const Main = (props: BoxProps) => {
               <Markdown>{selectedRecipe.method ?? "No method"}</Markdown>
             </Stack>
           </Stack>
+
+          <AddRecipe />
         </>
       ) : (
         false

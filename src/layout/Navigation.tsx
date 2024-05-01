@@ -31,14 +31,15 @@ import {
   FiX,
 } from "react-icons/fi";
 import { ColumnHeader, ColumnIconButton } from "./Column";
-import { useRecipe } from "./KitchenContext"; // Update import path if necessary
+import { ColorModeSwitcher } from "./ColorModeSwitcher";
+import { useKitchen } from "../KitchenContext"; // Update import path if necessary
 
 interface NavbarProps extends FlexProps {
   onClose?: () => void;
 }
 
 export const Navbar = (props: NavbarProps) => {
-  const { selectedNav, handleNavSelection } = useRecipe(); // Destructure the necessary state and functions from context
+  const { selectedNav, handleNavSelection } = useKitchen(); // Destructure the necessary state and functions from context
 
   return (
     <Flex
@@ -101,6 +102,7 @@ export const Navbar = (props: NavbarProps) => {
               <NavLink icon={FiGithub} isExternal>
                 GitHub
               </NavLink>
+              <ColorModeSwitcher />
             </Stack>
           </Stack>
         </Stack>

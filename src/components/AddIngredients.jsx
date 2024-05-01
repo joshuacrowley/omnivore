@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { useRecipe } from "./KitchenContext"; // Import the context
-import { runRecipe } from "./openai/addRecipe";
+import { useKitchen } from "../KitchenContext"; // Import the context
+import { addIngredientsToList } from "../api/openai/addIngredients"; // Import the new function
 import { FiPlus } from "react-icons/fi";
-import PhotoUpload from "./AddPhoto";
 
 import {
   Button,
@@ -22,30 +21,30 @@ import {
   useColorModeValue as mode,
 } from "@chakra-ui/react";
 
-export const AddRecipe = () => {
+export const AddIngredients = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { setSelectedRecipe, fetchRecipes } = useRecipe(); // Use runRecipe from the context
+  const { fetchShoppingRecords, setShoppingList } = useKitchen(); // Adjusted to use fetchShoppingRecords
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const toast = useToast();
 
-  const handleRecipeSubmit = async () => {
+  const handleIngredientSubmit = async () => {
     setLoading(true);
     try {
-      await runRecipe(description, {
-        setSelectedRecipe,
-        fetchRecipes,
-      });
+      const newItems = await addIngredientsToList(description);
+      setShoppingList((prev) => [...prev, ...newItems]); // Assuming setShoppingList updates your global or local state
+
       toast({
-        title: "Recipe added successfully.",
+        title: "Ingredients added successfully.",
         status: "success",
         duration: 5000,
         isClosable: true,
       });
       onClose(); // Close the drawer on success
+      setDescription(""); // Clear the textarea after submission
     } catch (error) {
       toast({
-        title: "Failed to add recipe",
+        title: "Failed to add ingredients",
         description: error.message,
         status: "error",
         duration: 5000,
@@ -61,9 +60,8 @@ export const AddRecipe = () => {
   return (
     <>
       <Button leftIcon={<FiPlus />} onClick={onOpen}>
-        Add Recipe
+        Add shopping
       </Button>
-
       <Drawer
         isOpen={isOpen}
         placement="right"
@@ -73,20 +71,20 @@ export const AddRecipe = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Add Recipe</DrawerHeader>
+          <DrawerHeader borderBottomWidth="1px">Add shopping</DrawerHeader>
 
           <DrawerBody>
             <Stack spacing="24px">
               <Box>
-                <FormLabel htmlFor="desc">Recipe description</FormLabel>
+                <FormLabel htmlFor="desc">List items</FormLabel>
                 <Textarea
                   id="desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the recipe to generate..."
+                  placeholder="Describe the ingredients to generate..."
+                  ref={firstField}
                 />
               </Box>
-              <PhotoUpload />
             </Stack>
           </DrawerBody>
 
@@ -94,7 +92,11 @@ export const AddRecipe = () => {
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button onClick={handleRecipeSubmit} isLoading={loading}>
+            <Button
+              isLoading={loading}
+              onClick={handleIngredientSubmit}
+              colorScheme="blue"
+            >
               Submit
             </Button>
           </DrawerFooter>
@@ -103,3 +105,5 @@ export const AddRecipe = () => {
     </>
   );
 };
+
+export default AddIngredients;

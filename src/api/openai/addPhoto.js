@@ -2,7 +2,7 @@ import { openai } from "./OpenAi";
 import { airtable } from "../airtable/Airtable";
 
 // Function to create a prompt to send to the OpenAI API
-async function addRecipe(prompt) {
+async function addRecipe(base64Image) {
   const response = await openai.chat.completions.create({
     model: "gpt-4-turbo",
     response_format: { type: "json_object" },
@@ -10,21 +10,41 @@ async function addRecipe(prompt) {
     messages: [
       {
         role: "system",
-        content: `Here's an idea for a recipe.
-                ${prompt}
+        content: `You are a helpful assistant. Analyze the contents of the image of a cookbook page and describe the text found within it in structured JSON format.
+     
+Remember the fields are name, ingredients, method and serves.
 
-                Can you make a json object we can use for the recipe.
-                Note how the fields ingredients and method use markdown.
-                
-                Remember the fields are name, ingredients, method and serves.
 
-                      {"name": "Chocolate Brownies",
-      "ingredients": "- Butter | 2 sticks | Softened - Brown Sugar | 1 cup | - Sugar | 1/2 cup white | \n",
-      "method": "Mix together dry ingredients with wet ingredients slowly. - Chocolate Chips | 1 Cup | > Usually I add 2 cups...just because. Stir in ~1 cup or more of...",
+
+                         {"name": "Chocolate Brownies",
+      "ingredients": "- Butter | 2 sticks| Softened\n
+       - Brown Sugar | 1 cup \n
+        - Sugar | 1/2 cup white \n",
+      "method": "1. Mix together dry ingredients with wet ingredients slowly. - Chocolate Chips | 1 Cup | > Usually I add 2 cups...just because. Stir in ~1 cup or more of...",
       "serves": 4}
 
-      name, not Title or Recipe title. It must be name.
-                `,
+            name, not Title or Recipe title. It must be name.
+
+      I can't have dairy, can you substitute for a diary free ingredient instead?
+      Can you always use metric measurements.
+
+      
+      Note how the fields ingredients and method use markdown.`,
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: "Analyze this image of a recipe and return a JSON output.",
+          },
+          {
+            type: "image_url",
+            image_url: {
+              url: `${base64Image}`,
+            },
+          },
+        ],
       },
     ],
   });
@@ -49,10 +69,10 @@ async function insertToAirtable(fields) {
 }
 
 // Main function to process the text prompt and update Airtable
-async function runRecipe(prompt, { setSelectedRecipe, fetchRecipes }) {
+async function runRecipe(base64Image, { setSelectedRecipe, fetchRecipes }) {
   try {
     // Fetch the recipe data from OpenAI
-    const openaiResponse = await addRecipe(prompt);
+    const openaiResponse = await addRecipe(base64Image);
 
     // Assuming OpenAI response is in openaiResponse.message.content and is a JSON string
     // Directly parsing the message content to form the fields object for Airtable

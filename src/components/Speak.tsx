@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, useToast } from "@chakra-ui/react";
-import speak from "./openai/speak"; // Ensure this is the correct path to your speak function
+import speak from "../api/openai/speak"; // Ensure this is the correct path to your speak function
+import { FiSpeaker } from "react-icons/fi";
 
 interface SpeakButtonProps {
   input: string;
@@ -30,7 +31,11 @@ const SpeakButton: React.FC<SpeakButtonProps> = ({ input, label }) => {
     }
   };
 
-  return <Button onClick={handleOnClick}>{label}</Button>;
+  return (
+    <Button onClick={handleOnClick} rightIcon={<FiSpeaker />}>
+      {label}
+    </Button>
+  );
 };
 
 export default SpeakButton;

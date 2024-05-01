@@ -24,6 +24,19 @@ interface CreateRecipeItem {
   shopping?: string[];
 }
 
+interface UpdateRecipeItem {
+  id: string;
+  fields: {
+    name?: string;
+    ingredients?: string;
+    method?: string;
+    serves?: number;
+    photo?: Attachment[];
+    meals?: string[];
+    shopping?: string[];
+  };
+}
+
 /**
  * Fetches recipe records from the "Recipes" table with optional filters.
  * @param filters Additional options for querying the "Recipes" table.
@@ -137,7 +150,52 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
   }
 }
 
+/**
+ * Updates existing recipe item records in the "Recipes" table.
+ * @param {UpdateRecipeItem[]} updates Array of recipe data with ids for updates.
+ * @returns {Promise<RecipeItem[]>} A promise resolving to the list of updated recipe item records.
+ */
+async function updateRecipes(
+  updates: UpdateRecipeItem[]
+): Promise<RecipeItem[]> {
+  try {
+    const formattedUpdates = updates.map((update) => ({
+      id: update.id,
+      fields: {
+        name: update.fields.name,
+        ingredients: update.fields.ingredients,
+        method: update.fields.method,
+        serves: update.fields.serves,
+        photo: update.fields.photo,
+        meals: update.fields.meals,
+        shopping: update.fields.shopping,
+      },
+    }));
+
+    console.log(formattedUpdates);
+
+    const updatedRecords: Records<FieldSet> = await airtable("Recipes").update(
+      formattedUpdates
+    );
+
+    return updatedRecords.map((record) => ({
+      id: record.id,
+      name: record.fields.name as string,
+      ingredients: record.fields.ingredients as string,
+      method: record.fields.method as string,
+      serves: record.fields.serves as number,
+      photo: record.fields.photo as Attachment[],
+      recipeId: record.id,
+      meals: record.fields.meals as string[],
+      shopping: record.fields.shopping as string[],
+    }));
+  } catch (error) {
+    console.error("Failed to update recipe items:", error);
+    throw error; // Depending on your application needs, you may want to handle this error differently.
+  }
+}
+
 // Export the function for use in other components
-export { getRecipes, getRecipeById, addRecipe };
+export { getRecipes, getRecipeById, addRecipe, updateRecipes };
 
 export type { RecipeItem };

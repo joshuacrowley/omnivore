@@ -11,12 +11,12 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import { useRecipe } from "./KitchenContext"; // Update import path if necessary
-import { MealItem } from "./airtable/Meal";
+import { useKitchen } from "../KitchenContext"; // Update import path if necessary
+import { MealItem } from "../api/airtable/Meal";
 
 export const MealsSidebar = (props: StackProps) => {
   const { selectedMealPlan, mealPlans, setSelectedMealPlan, error, loading } =
-    useRecipe(); // Destructure the necessary state and functions from context
+    useKitchen(); // Destructure the necessary state and functions from context
 
   console.log("selectedMealPlan", selectedMealPlan, mealPlans);
 

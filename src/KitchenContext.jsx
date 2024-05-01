@@ -5,13 +5,16 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { getRecipeById, getRecipes } from "./airtable/Recipe";
-import { getShoppingRecords, updateShoppingItem } from "./airtable/Shopping"; // Import your API functions
-import { getMeals } from "./airtable/Meal"; // Import your API functions
+import { getRecipeById, getRecipes } from "./api/airtable/Recipe";
+import {
+  getShoppingRecords,
+  updateShoppingItem,
+} from "./api/airtable/Shopping"; // Import your API functions
+import { getMeals } from "./api/airtable/Meal"; // Import your API functions
 
-const RecipeContext = createContext();
+const KitchenContext = createContext();
 
-export const useRecipe = () => useContext(RecipeContext);
+export const useKitchen = () => useContext(KitchenContext);
 
 export const RecipeProvider = ({ children }) => {
   const [recipes, setRecipes] = useState([]);
@@ -130,8 +133,8 @@ export const RecipeProvider = ({ children }) => {
   };
 
   return (
-    <RecipeContext.Provider value={providerValue}>
+    <KitchenContext.Provider value={providerValue}>
       {children}
-    </RecipeContext.Provider>
+    </KitchenContext.Provider>
   );
 };

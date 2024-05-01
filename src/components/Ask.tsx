@@ -3,8 +3,8 @@ import { Button, useToast } from "@chakra-ui/react";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { FiMic, FiXOctagon } from "react-icons/fi";
 
-import { ask } from "./openai/ask";
-import speak from "./openai/speak";
+import { ask } from "../api/openai/ask";
+import speak from "../api/openai/speak";
 
 interface AskProps {
   questionContext: string;

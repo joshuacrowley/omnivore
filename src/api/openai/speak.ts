@@ -3,7 +3,7 @@ import { openai } from "./OpenAi";
 const speak = async (input: string) => {
   try {
     const response = await openai.audio.speech.create({
-      model: "tts-1-hd",
+      model: "tts-1",
       voice: "alloy",
       input,
     });

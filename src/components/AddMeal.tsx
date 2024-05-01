@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
-import { useRecipe } from "./KitchenContext";
-import { processMealPlan } from "./openai/addMeal";
-import { MealItem } from "./airtable/Meal";
+import { useKitchen } from "../KitchenContext";
+import { processMealPlan } from "../api/openai/addMeal";
+import { MealItem } from "../api/airtable/Meal";
 import { FiPlus } from "react-icons/fi";
 
 import {
@@ -25,7 +25,7 @@ import {
 
 export const ProcessMealPlanForm = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedRecipe, shoppingList, mealPlans } = useRecipe();
+  const { selectedRecipe, shoppingList, mealPlans } = useKitchen();
   const [loading, setLoading] = useState(false);
   const [useExisting, setUseExisting] = useState(false);
   const [selectedMealPlanId, setSelectedMealPlanId] = useState("");

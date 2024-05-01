@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button, Input, VStack, useToast } from "@chakra-ui/react";
-import { useRecipe } from "./KitchenContext";
-import { runRecipe } from "./openai/AddPhoto"; // Assuming this import path is correct
+import { useKitchen } from "../KitchenContext";
+import { runRecipe } from "../api/openai/addPhoto"; // Assuming this import path is correct
 
 const PhotoUploadComponent: React.FC = () => {
-  const { setSelectedRecipe, fetchRecipes } = useRecipe();
+  const { setSelectedRecipe, fetchRecipes } = useKitchen();
   const [file, setFile] = useState<string | null>(null);
   const toast = useToast();
 

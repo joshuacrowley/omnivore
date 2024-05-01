@@ -20,16 +20,16 @@ import { Main } from "./Main";
 import { Navbar } from "./Navigation";
 import { RecipeSidebar } from "./RecipeSidebar";
 import { ShoppingSideBar } from "./ShoppingSideBar";
-import { MealsSidebar } from "./MealsSidebar";
-import { useRecipe } from "./KitchenContext"; // Update import path if necessary
-import AddIngredients from "./AddIngredients";
-import { ProcessMealPlanForm } from "./AddMeal";
+import { MealsSidebar } from "./MealSidebar";
+import { useKitchen } from "../KitchenContext"; // Update import path if necessary
+import AddIngredients from "../components/AddIngredients";
+import { ProcessMealPlanForm } from "../components/AddMeal";
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedNav, selectedRecipe } = useRecipe(); // Destructure the necessary state and functions from context
+  const { selectedNav, selectedRecipe } = useKitchen(); // Destructure the necessary state and functions from context
 
   return (
     <Flex height="100vh">
