@@ -23,7 +23,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-export const ProcessMealPlanForm = () => {
+import { ColumnButton } from "../layout/Column";
+
+export const AddMeal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { selectedRecipe, shoppingList, mealPlans } = useKitchen();
   const [loading, setLoading] = useState(false);
@@ -66,9 +68,9 @@ export const ProcessMealPlanForm = () => {
 
   return (
     <>
-      <Button leftIcon={<FiPlus />} onClick={onOpen}>
+      <ColumnButton leftIcon={<FiPlus />} onClick={onOpen}>
         Add to Meal plan
-      </Button>
+      </ColumnButton>
       <Drawer
         isOpen={isOpen}
         placement="right"

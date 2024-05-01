@@ -22,14 +22,12 @@ import {
 import { RecipeItem } from "../api/airtable/Recipe";
 import { ShoppingItem } from "../api/airtable/Shopping";
 import { useKitchen } from "../KitchenContext";
-import AddIngredients from "../components/AddIngredients";
 
 export const ShoppingSideBar = (props: StackProps) => {
   const {
     shoppingList,
     updateShoppingListItem,
     recipes,
-    setSelectedRecipe,
     setShoppingList,
     loading,
     error,
@@ -55,11 +53,6 @@ export const ShoppingSideBar = (props: StackProps) => {
         setShoppingList(shoppingList); // Revert to original state in case of an error
       }
     );
-  };
-  // Helper function to find recipe names by ID
-  const getRecipeName = (recipeId: string) => {
-    const recipe = recipes.find((recipe: RecipeItem) => recipe.id === recipeId);
-    return recipe ? recipe.name : "Recipe not found";
   };
 
   if (error) {
@@ -113,9 +106,6 @@ export const ShoppingSideBar = (props: StackProps) => {
       py="3"
       {...props}
     >
-      <Box hideBelow="md">
-        <AddIngredients />
-      </Box>
       <Flex justifyContent={"space-between"}>
         <CircularProgress value={progressPercent}>
           <CircularProgressLabel>

@@ -13,13 +13,14 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  SkeletonCircle,
 } from "@chakra-ui/react";
 import { useKitchen } from "../KitchenContext";
 import SpeakButton from "../components/Speak";
 import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
-import { AddRecipe } from "../components/AddRecipeWhisper";
+import { AddRecipe } from "../components/AddRecipe";
 
 const markdownOptions = {
   overrides: {
@@ -40,9 +41,13 @@ export const Main = (props: BoxProps) => {
 
   if (loading) {
     return (
-      <Stack spacing="8" p="4">
-        <Skeleton height="40px" />
-        <Skeleton height="20px" />
+      <Stack spacing="1" p="2">
+        <Stack spacing="1" p="4" marginBlockEnd={6} align={"center"}>
+          <SkeletonCircle size="125px" />
+        </Stack>
+        <Skeleton height="40px" marginBlockEnd={6} />
+        <Skeleton height="40px" marginBlockEnd={6} />
+        <Skeleton height="250px" />
         <Skeleton height="250px" />
       </Stack>
     );
@@ -89,8 +94,6 @@ export const Main = (props: BoxProps) => {
               <Markdown>{selectedRecipe.method ?? "No method"}</Markdown>
             </Stack>
           </Stack>
-
-          <AddRecipe />
         </>
       ) : (
         false

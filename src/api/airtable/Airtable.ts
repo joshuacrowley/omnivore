@@ -1,4 +1,4 @@
-import Airtable from "airtable";
+import Airtable, { FieldSet, Records, SelectOptions } from "airtable";
 // Airtable configuration with TypeScript typing for the environment variables
 export const airtable = new Airtable({
   apiKey: process.env.REACT_APP_AIRTABLE_API_KEY as string,
@@ -11,4 +11,4 @@ interface Select {
   fields?: string[];
 }
 
-export type { Select };
+export type { Select, FieldSet, Records, SelectOptions };

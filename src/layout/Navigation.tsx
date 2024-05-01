@@ -17,17 +17,11 @@ import {
 import {
   FiArrowUpRight,
   FiBookOpen,
-  FiBookmark,
-  FiCamera,
-  FiFigma,
-  FiFilm,
+  FiDatabase,
   FiGithub,
-  FiHome,
+  FiShoppingCart,
+  FiCalendar,
   FiMessageCircle,
-  FiMessageSquare,
-  FiMic,
-  FiShield,
-  FiTwitter,
   FiX,
 } from "react-icons/fi";
 import { ColumnHeader, ColumnIconButton } from "./Column";
@@ -64,7 +58,7 @@ export const Navbar = (props: NavbarProps) => {
           </HStack>
         </ColumnHeader>
 
-        <Stack px="3" spacing="6">
+        <Stack px="3" spacing="6" justify={"space-between"}>
           <Stack spacing="1">
             <NavLink
               onClick={() => handleNavSelection("Recipes")}
@@ -76,32 +70,44 @@ export const Navbar = (props: NavbarProps) => {
             <NavLink
               onClick={() => handleNavSelection("Shopping")}
               aria-current={selectedNav === "Shopping" ? "page" : false}
-              icon={FiBookmark}
+              icon={FiShoppingCart}
             >
               Shopping
             </NavLink>
             <NavLink
               onClick={() => handleNavSelection("Meal plan")}
               aria-current={selectedNav === "Meal plan" ? "page" : false}
-              icon={FiCamera}
+              icon={FiCalendar}
             >
               Meal plan
-            </NavLink>
-            <NavLink
-              onClick={() => handleNavSelection("Chat")}
-              aria-current={selectedNav === "Chat" ? "page" : false}
-              icon={FiMessageCircle}
-            >
-              Chat
             </NavLink>
           </Stack>
 
           <Stack spacing="3">
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
+              <NavLink
+                onClick={() => handleNavSelection("Chat")}
+                aria-current={selectedNav === "Chat" ? "page" : false}
+                icon={FiMessageCircle}
+              >
+                Chat log
+              </NavLink>
+
               <NavLink icon={FiGithub} isExternal>
                 GitHub
               </NavLink>
+
+              <NavLink icon={FiDatabase} isExternal>
+                <Link
+                  href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}`}
+                  target={"_top"}
+                  isExternal
+                >
+                  Airtable
+                </Link>
+              </NavLink>
+
               <ColorModeSwitcher />
             </Stack>
           </Stack>

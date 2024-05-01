@@ -44,7 +44,7 @@ export const MealsSidebar = (props: StackProps) => {
 
   return (
     <Stack
-      spacing={{ base: "1px", lg: "1" }}
+      spacing={{ base: "16px", lg: "1" }}
       px={{ lg: "3" }}
       py="3"
       {...props}
@@ -69,6 +69,8 @@ export const MealsSidebar = (props: StackProps) => {
             lineHeight="1.25rem"
           >
             <Text fontWeight="medium">{meal.name}</Text>
+            <Text fontWeight="medium">{meal.date}</Text>
+            <Text fontWeight="medium">{meal.recipeNames}</Text>
           </Stack>
         </Link>
       ))}

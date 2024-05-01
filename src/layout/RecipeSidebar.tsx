@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
 import { RecipeItem } from "../api/airtable/Recipe";
-import { AddRecipe } from "../components/AddRecipeWhisper";
 
 export const RecipeSidebar = (props: StackProps) => {
   const { recipes, selectedRecipe, setSelectedRecipe, loading, error } =
@@ -33,10 +32,14 @@ export const RecipeSidebar = (props: StackProps) => {
 
   if (loading) {
     return (
-      <Stack>
-        <Skeleton height="20px" />
-        <Skeleton height="20px" />
-        <Skeleton height="20px" />
+      <Stack spacing={{ base: "1px", lg: "1" }} px={{ lg: "3" }} py="3">
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
+        <Skeleton height="100px" borderRadius={{ lg: "lg" }} />
       </Stack>
     );
   }
@@ -48,7 +51,6 @@ export const RecipeSidebar = (props: StackProps) => {
       py="3"
       {...props}
     >
-      <AddRecipe />
       {recipes.map((recipe: RecipeItem) => (
         <Link
           key={recipe.id}

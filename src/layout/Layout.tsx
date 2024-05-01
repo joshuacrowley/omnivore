@@ -10,20 +10,16 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiArrowLeft, FiPlus, FiMenu, FiRss } from "react-icons/fi";
-import {
-  ColumnButton,
-  ColumnHeader,
-  ColumnHeading,
-  ColumnIconButton,
-} from "./Column";
+import { ColumnHeader, ColumnHeading, ColumnIconButton } from "./Column";
 import { Main } from "./Main";
 import { Navbar } from "./Navigation";
 import { RecipeSidebar } from "./RecipeSidebar";
 import { ShoppingSideBar } from "./ShoppingSideBar";
 import { MealsSidebar } from "./MealSidebar";
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
-import AddIngredients from "../components/AddIngredients";
-import { ProcessMealPlanForm } from "../components/AddMeal";
+import { AddMeal } from "../components/AddMeal";
+import { AddRecipe } from "../components/AddRecipe";
+import { AddShopping } from "../components/AddShopping";
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
@@ -66,7 +62,9 @@ export const Layout = () => {
               </Drawer>
               <ColumnHeading>{selectedNav}</ColumnHeading>
             </HStack>
-            <ColumnButton leftIcon={<FiRss />}>Airtable</ColumnButton>
+
+            {selectedNav === "Recipes" && <AddRecipe />}
+            {selectedNav === "Shopping" && <AddShopping />}
           </HStack>
         </ColumnHeader>
 
@@ -94,8 +92,8 @@ export const Layout = () => {
                 <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
               )}
             </HStack>
-            {selectedNav === "Shopping" && <AddIngredients />}
-            {selectedNav === "Recipes" && <ProcessMealPlanForm />}
+
+            {selectedNav === "Recipes" && <AddMeal />}
           </HStack>
         </ColumnHeader>
 

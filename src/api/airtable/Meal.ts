@@ -1,5 +1,4 @@
-import { airtable, Airtable, Select } from "./Airtable";
-import { FieldSet, Records } from "airtable"; // Assuming FieldSet is available to import
+import { airtable, Airtable, Select, FieldSet, Records } from "./Airtable";
 
 // Define an interface for the Airtable record fields for the "Shopping" table
 interface MealItem {
@@ -9,6 +8,7 @@ interface MealItem {
   date?: string; // Single line text for the category of the item
   ready: boolean; // Checkbox indicating whether the item was bought
   recipeIds?: string[]; // Array of linked record IDs from the Recipes table
+  recipeNames?: string[]; // Array of names from the Recipes table
 }
 
 // Define an interface for the update data
@@ -34,6 +34,7 @@ interface MealPlanItem {
   date?: string;
   ready: boolean;
   recipeIds?: string[];
+  recipeNames?: string[];
   // Include other relevant fields as necessary
 }
 
@@ -50,7 +51,15 @@ async function getMeals(
     airtable("Meals") // Specific table name for clarity and reusability
       .select(
         filters || {
-          fields: ["name", "runsheet", "id", "date", "ready", "recipeIds"],
+          fields: [
+            "name",
+            "runsheet",
+            "id",
+            "date",
+            "ready",
+            "recipeIds",
+            "recipeNames",
+          ],
         }
       )
       .eachPage(
@@ -169,6 +178,7 @@ async function getMealPlanById(
       date: record.fields.date as string,
       ready: record.fields.ready as boolean,
       recipeIds: record.fields.recipeIds as string[],
+      recipeNames: record.fields.recipeIds as string[],
       // Map other fields as necessary
     };
     return mealPlan;

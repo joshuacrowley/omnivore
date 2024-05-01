@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Image, Spinner } from "@chakra-ui/react";
+import { Box, Image, SkeletonCircle } from "@chakra-ui/react";
 import { getRecipeById, RecipeItem } from "../api/airtable/Recipe";
 import { handleRecipeImageUpdate } from "../api/openai/makeIcon";
 import { Attachment } from "airtable"; // Assuming FieldSet is available to import
@@ -53,7 +53,7 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
       alignItems={"center"}
     >
       {loading ? (
-        <Spinner />
+        <SkeletonCircle size="125px" />
       ) : (
         images.length > 0 && (
           <Image

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useKitchen } from "../KitchenContext"; // Import the context
 import { addIngredientsToList } from "../api/openai/addIngredients"; // Import the new function
 import { FiPlus } from "react-icons/fi";
-
+import { useWhisper } from "@chengsokdara/use-whisper";
+import Listen from "./Listen";
 import {
   Button,
   Drawer,
@@ -20,13 +21,19 @@ import {
   useToast,
   useColorModeValue as mode,
 } from "@chakra-ui/react";
+import { ColumnButton } from "../layout/Column";
 
-export const AddIngredients = () => {
+export const AddShopping = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { fetchShoppingRecords, setShoppingList } = useKitchen(); // Adjusted to use fetchShoppingRecords
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const toast = useToast();
+
+  const { recording, transcribing, transcript, startRecording, stopRecording } =
+    useWhisper({
+      apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+    });
 
   const handleIngredientSubmit = async () => {
     setLoading(true);
@@ -55,13 +62,20 @@ export const AddIngredients = () => {
     }
   };
 
+  // Update the description when the transcript updates
+  React.useEffect(() => {
+    if (transcript.text) {
+      setDescription(transcript.text);
+    }
+  }, [transcript.text]);
+
   const firstField = React.useRef();
 
   return (
     <>
-      <Button leftIcon={<FiPlus />} onClick={onOpen}>
+      <ColumnButton leftIcon={<FiPlus />} onClick={onOpen}>
         Add shopping
-      </Button>
+      </ColumnButton>
       <Drawer
         isOpen={isOpen}
         placement="right"
@@ -81,10 +95,16 @@ export const AddIngredients = () => {
                   id="desc"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the ingredients to generate..."
+                  placeholder="5 tomatoes, milk, bread"
                   ref={firstField}
                 />
               </Box>
+              <Listen
+                recording={recording}
+                transcribing={transcribing}
+                startRecording={startRecording}
+                stopRecording={stopRecording}
+              />
             </Stack>
           </DrawerBody>
 
@@ -92,11 +112,7 @@ export const AddIngredients = () => {
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
-            <Button
-              isLoading={loading}
-              onClick={handleIngredientSubmit}
-              colorScheme="blue"
-            >
+            <Button isLoading={loading} onClick={handleIngredientSubmit}>
               Submit
             </Button>
           </DrawerFooter>
@@ -106,4 +122,4 @@ export const AddIngredients = () => {
   );
 };
 
-export default AddIngredients;
+export default AddShopping;
