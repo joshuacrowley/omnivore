@@ -20,7 +20,7 @@ import SpeakButton from "../components/Speak";
 import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
-import { AddRecipe } from "../components/AddRecipe";
+import { ChatLayout } from "../components/thread/ChatLayout";
 
 const markdownOptions = {
   overrides: {
@@ -36,8 +36,14 @@ const markdownOptions = {
 };
 
 export const Main = (props: BoxProps) => {
-  const { selectedRecipe, selectedMealPlan, selectedNav, loading, error } =
-    useKitchen(); // Get the loading and error states from context
+  const {
+    selectedRecipe,
+    selectedThread,
+    selectedMealPlan,
+    selectedNav,
+    loading,
+    error,
+  } = useKitchen(); // Get the loading and error states from context
 
   if (loading) {
     return (
@@ -119,6 +125,28 @@ export const Main = (props: BoxProps) => {
               <Markdown options={markdownOptions}>
                 {selectedMealPlan.runsheet ?? "No runsheet"}
               </Markdown>
+            </Stack>
+          </Stack>
+        </>
+      ) : (
+        false
+      )}
+
+      {selectedNav === "Chat" ? (
+        <>
+          <Stack spacing="8">
+            <Stack spacing="3">
+              <Heading as="h1" size="lg" color={mode("gray.700", "white")}>
+                {selectedThread.topic}
+              </Heading>
+            </Stack>
+            <Stack
+              spacing="5"
+              lineHeight="1.75"
+              maxW="65ch"
+              color={mode("blackAlpha.800", "whiteAlpha.800")}
+            >
+              <ChatLayout />
             </Stack>
           </Stack>
         </>

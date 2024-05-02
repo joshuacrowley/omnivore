@@ -81,18 +81,20 @@ export const Navbar = (props: NavbarProps) => {
             >
               Meal plan
             </NavLink>
+
+            <NavLink
+                onClick={() => handleNavSelection("Chat")}
+                aria-current={selectedNav === "Chat" ? "page" : false}
+                icon={FiMessageCircle}
+              >
+                Chat 
+              </NavLink>
           </Stack>
 
           <Stack spacing="3">
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
-              <NavLink
-                onClick={() => handleNavSelection("Chat")}
-                aria-current={selectedNav === "Chat" ? "page" : false}
-                icon={FiMessageCircle}
-              >
-                Chat log
-              </NavLink>
+
 
               <NavLink icon={FiGithub} isExternal>
                 GitHub

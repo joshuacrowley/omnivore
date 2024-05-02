@@ -18,8 +18,6 @@ export const MealsSidebar = (props: StackProps) => {
   const { selectedMealPlan, mealPlans, setSelectedMealPlan, error, loading } =
     useKitchen(); // Destructure the necessary state and functions from context
 
-  console.log("selectedMealPlan", selectedMealPlan, mealPlans);
-
   if (error) {
     return (
       <Alert status="error">

@@ -15,6 +15,7 @@ import { Main } from "./Main";
 import { Navbar } from "./Navigation";
 import { RecipeSidebar } from "./RecipeSidebar";
 import { ShoppingSideBar } from "./ShoppingSideBar";
+import { ChatSidebar } from "./ChatSidebar";
 import { MealsSidebar } from "./MealSidebar";
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
 import { AddMeal } from "../components/AddMeal";
@@ -25,7 +26,8 @@ export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedNav, selectedRecipe } = useKitchen(); // Destructure the necessary state and functions from context
+  const { selectedNav, selectedRecipe, selectedThread, selectedMealPlan } =
+    useKitchen(); // Destructure the necessary state and functions from context
 
   return (
     <Flex height="100vh">
@@ -71,6 +73,7 @@ export const Layout = () => {
         {selectedNav === "Recipes" && <RecipeSidebar />}
         {selectedNav === "Shopping" && <ShoppingSideBar />}
         {selectedNav === "Meal plan" && <MealsSidebar />}
+        {selectedNav === "Chat" && <ChatSidebar />}
       </Box>
       <Box
         bg={useColorModeValue("white", "gray.900")}
@@ -88,8 +91,16 @@ export const Layout = () => {
                 display={{ base: "inline-flex", md: "none" }}
               />
 
-              {mainIsScrolled && (
+              {mainIsScrolled && selectedNav === "Recipes" && (
                 <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
+              )}
+
+              {mainIsScrolled && selectedNav === "Meal plan" && (
+                <ColumnHeading>{selectedMealPlan.name}</ColumnHeading>
+              )}
+
+              {mainIsScrolled && selectedNav === "Chat" && (
+                <ColumnHeading>{selectedThread.topic}</ColumnHeading>
               )}
             </HStack>
 

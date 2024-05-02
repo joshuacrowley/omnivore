@@ -11,6 +11,7 @@ import {
   updateShoppingItem,
 } from "./api/airtable/Shopping"; // Import your API functions
 import { getMeals } from "./api/airtable/Meal"; // Import your API functions
+import { findThreads, getThreadMessages } from "./api/openai/findThreads";
 
 const KitchenContext = createContext();
 
@@ -18,11 +19,14 @@ export const useKitchen = () => useContext(KitchenContext);
 
 export const RecipeProvider = ({ children }) => {
   const [recipes, setRecipes] = useState([]);
+  const [threads, setThreads] = useState([]);
+  const [selectedThread, setSelectedThread] = useState([]);
+  const [messageList, setMessageList] = useState([]);
   const [mealPlans, setMealPlans] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [selectedMealPlan, setSelectedMealPlan] = useState(null);
-  const [selectedNav, setSelectedNav] = useState("Recipes"); // This can be "Recipes", "Shopping", "Meal plan"
+  const [selectedNav, setSelectedNav] = useState("Chat"); // This can be "Recipes", "Shopping", "Meal plan"
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -41,6 +45,21 @@ export const RecipeProvider = ({ children }) => {
     }
     setLoading(false);
   }, [selectedRecipe]);
+
+  const fetchThreads = useCallback(async () => {
+    try {
+      const records = await findThreads();
+      console.log("findThreads", records);
+      setThreads(records);
+      setError(null);
+
+      if (records.length > 0 && !selectedThread) {
+        setSelectedThread(records[0]);
+      }
+    } catch (err) {
+      setError(err.message);
+    }
+  }, []);
 
   const fetchShoppingRecords = useCallback(async () => {
     try {
@@ -87,6 +106,7 @@ export const RecipeProvider = ({ children }) => {
     fetchRecipes();
     fetchShoppingRecords();
     fetchMeals();
+    fetchThreads();
   }, []);
 
   const handleNavSelection = useCallback((navItem) => {
@@ -113,6 +133,10 @@ export const RecipeProvider = ({ children }) => {
   }, []);
 
   const providerValue = {
+    threads,
+    setSelectedThread,
+    selectedThread,
+    messageList,
     recipes,
     mealPlans,
     shoppingList,
