@@ -50,6 +50,8 @@ async function getThreadMessages(id: string) {
   try {
     const messages = await openai.beta.threads.messages.list(id);
 
+    console.log("getThreadMessages", messages);
+
     return messages;
   } catch (error) {
     console.error("Failed to retrieve threads:", error);

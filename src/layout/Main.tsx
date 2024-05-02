@@ -21,6 +21,7 @@ import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
 import { ChatLayout } from "../components/thread/ChatLayout";
+import { Messages } from "../components/chat/MessagesLayout";
 
 const markdownOptions = {
   overrides: {
@@ -137,16 +138,17 @@ export const Main = (props: BoxProps) => {
           <Stack spacing="8">
             <Stack spacing="3">
               <Heading as="h1" size="lg" color={mode("gray.700", "white")}>
-                {selectedThread.topic}
+                {selectedThread && selectedThread.topic}
               </Heading>
             </Stack>
+
             <Stack
               spacing="5"
               lineHeight="1.75"
               maxW="65ch"
               color={mode("blackAlpha.800", "whiteAlpha.800")}
             >
-              <ChatLayout />
+              <Messages />
             </Stack>
           </Stack>
         </>

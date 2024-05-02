@@ -20,8 +20,8 @@ export const useKitchen = () => useContext(KitchenContext);
 export const RecipeProvider = ({ children }) => {
   const [recipes, setRecipes] = useState([]);
   const [threads, setThreads] = useState([]);
-  const [selectedThread, setSelectedThread] = useState([]);
-  const [messageList, setMessageList] = useState([]);
+  const [selectedThread, setSelectedThread] = useState(null);
+  const [messageList, setMessageList] = useState(null);
   const [mealPlans, setMealPlans] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -46,6 +46,17 @@ export const RecipeProvider = ({ children }) => {
     setLoading(false);
   }, [selectedRecipe]);
 
+  const fetchThreadMessages = useCallback(async () => {
+    try {
+      const records = await getThreadMessages(selectedThread.id);
+      console.log("getThreadMessages", records);
+      setMessageList(records);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [selectedThread]);
+
   const fetchThreads = useCallback(async () => {
     try {
       const records = await findThreads();
@@ -59,7 +70,7 @@ export const RecipeProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
     }
-  }, []);
+  }, [selectedThread]);
 
   const fetchShoppingRecords = useCallback(async () => {
     try {
@@ -102,13 +113,6 @@ export const RecipeProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  useEffect(() => {
-    fetchRecipes();
-    fetchShoppingRecords();
-    fetchMeals();
-    fetchThreads();
-  }, []);
-
   const handleNavSelection = useCallback((navItem) => {
     setSelectedNav(navItem);
   }, []);
@@ -130,11 +134,14 @@ export const RecipeProvider = ({ children }) => {
     fetchRecipes();
     fetchShoppingRecords();
     fetchMeals();
+    fetchThreads();
+    fetchThreadMessages();
   }, []);
 
   const providerValue = {
     threads,
     setSelectedThread,
+    fetchThreadMessages,
     selectedThread,
     messageList,
     recipes,
