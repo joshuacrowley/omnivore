@@ -1,11 +1,20 @@
-import React, { useEffect } from "react";
-import { Box, Button, Flex, HStack, Stack } from "@chakra-ui/react";
-import { FiDownloadCloud, FiRepeat, FiSend } from "react-icons/fi";
-import { ChatActionButton } from "./ChatActionButton";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Stack,
+  useToast,
+  CircularProgress,
+  Input,
+} from "@chakra-ui/react";
+import { FiMic, FiRepeat, FiSend } from "react-icons/fi";
 import { ChatMessage } from "./ChatMessage";
 import { ChatMessages } from "./ChatMessages";
 import { ChatTextarea } from "./ChatTextarea";
 import { useKitchen } from "../../KitchenContext";
+import { openai } from "../../api/openai/OpenAi";
 
 // Define the types for the messages and content
 interface Message {
@@ -23,73 +32,101 @@ interface Content {
   // Add other properties based on your actual data structure
 }
 
-export const Messages = () => {
-  const { messageList, fetchThreadMessages, selectedThread } = useKitchen(); // Get the message list from context
+const ASSISTANT_ID = "asst_Hbmi76iEKiYzSSr40Ve8GHm9";
+
+const Messages = () => {
+  const { messageList, setMessageList, fetchThreadMessages, selectedThread } =
+    useKitchen();
+  const [input, setInput] = useState("");
+  const [isWaiting, setIsWaiting] = useState(false);
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchThreadMessages();
   }, [selectedThread]);
+
+  const handleSendMessage = async () => {
+    setIsWaiting(true);
+    try {
+      if (openai) {
+        await openai.beta.threads.messages.create(selectedThread.id, {
+          role: "user",
+          content: input,
+        });
+
+        // We use the stream SDK helper to create a run with
+        // streaming. The SDK provides helpful event listeners to handle
+        // the streamed response.
+
+        console.log("assistant_id", ASSISTANT_ID);
+
+        const run = openai.beta.threads.runs
+          .stream(selectedThread.id, {
+            assistant_id: ASSISTANT_ID as string,
+          })
+          .on("textCreated", (text) => console.log("\nassistant > "))
+          .on("textDelta", (textDelta, snapshot) =>
+            console.log(textDelta.value)
+          )
+          .on("toolCallCreated", (toolCall) =>
+            console.log(`\nassistant > ${toolCall.type}\n\n`)
+          );
+
+        const messageList = await openai.beta.threads.messages.list(
+          selectedThread.id
+        );
+
+        console.log("messageList", messageList);
+
+        //setMessageList(messageList);
+      }
+    } catch (error) {
+      toast({
+        title: "Error sending message",
+        description: (error as any).message,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+    setIsWaiting(false);
+    setInput("");
+  };
+
   console.log("messageList", messageList);
 
-  // Ensure messageList is populated before rendering
-  if (!messageList || !messageList.body || !messageList.body.data) {
-    return null; // Or render a loading indicator
-  }
-
   return (
-    <Flex
-      direction="column"
-      pos="relative"
-      bg="bg.canvas"
-      height="100vh"
-      overflow="hidden"
-    >
-      <Box overflowY="auto" paddingTop="20" paddingBottom="40">
+    <Flex direction="column" p="5">
+      {messageList && (
         <ChatMessages>
-          {messageList.body.data.map((message: Message, index: number) => (
-            <ChatMessage
-              key={index}
-              author={{
-                name: message.role === "assistant" ? "Assistant" : "User",
-                image: "",
-              }} // Assuming you adjust according to the expected type
-              //@ts-ignore
-              content={message.content
-                .map((content: Content) =>
-                  content.type === "text" && content.text
-                    ? content.text.value
-                    : ""
-                )
-                .join(" ")}
-              createdAt={new Date(message.created_at * 1000).toLocaleString()} // Formatting UNIX timestamp
-            />
+          {messageList.data.map((message: Message, index: number) => (
+            <ChatMessage key={index} message={message} />
           ))}
         </ChatMessages>
-      </Box>
-
-      <Box
-        pos="absolute"
-        bottom="0"
-        insetX="0"
-        bgGradient="linear(to-t, bg.canvas 80%, rgba(0,0,0,0))"
-        paddingY="8"
-        marginX="4"
+      )}
+      <Input
+        placeholder="Type your message here..."
+        value={input}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setInput(e.target.value)
+        }
+        onKeyPress={(e: React.KeyboardEvent) =>
+          e.key === "Enter" && handleSendMessage()
+        }
+      />
+      {isWaiting && <CircularProgress isIndeterminate color="green.300" />}
+      <Button
+        rightIcon={<FiSend />}
+        colorScheme="teal"
+        variant="outline"
+        onClick={handleSendMessage}
+        disabled={isWaiting}
       >
-        <Stack maxW="prose" mx="auto">
-          <HStack>
-            <ChatActionButton icon={FiRepeat}>Regenerate</ChatActionButton>
-            <ChatActionButton icon={FiDownloadCloud}>Download</ChatActionButton>
-          </HStack>
-          <Box as="form" pos="relative" pb="1">
-            <ChatTextarea />
-            <Box pos="absolute" top="3" right="0" zIndex="2">
-              <Button size="sm" type="submit" variant="text" colorScheme="gray">
-                <FiSend />
-              </Button>
-            </Box>
-          </Box>
-        </Stack>
-      </Box>
+        Send
+      </Button>
     </Flex>
   );
 };
+
+export default Messages;

@@ -48,11 +48,7 @@ async function getRecipes(
   const recordsList: RecipeItem[] = [];
   return new Promise((resolve, reject) => {
     airtable("Recipes")
-      .select(
-        filters || {
-          maxRecords: 10,
-        }
-      )
+      .select(filters || {})
       .eachPage(
         function page(records, fetchNextPage) {
           records.forEach(function (record) {
@@ -121,6 +117,13 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
       meals: recipeData.meals,
       shopping: recipeData.shopping,
     };
+
+    const markdownContent = `# ${recipeData.name}\n\n- Serves: ${
+      recipeData.serves
+    }\n\n## Ingredients\n${recipeData.ingredients}\n\n## Method\n${
+      recipeData.method
+    }\n\n*Recipe created on: ${new Date().toISOString().slice(0, 10)}*`;
+    const blob = new Blob([markdownContent], { type: "text/markdown" });
 
     const createdRecords: Records<FieldSet> = await airtable("Recipes").create([
       { fields: airtableData },

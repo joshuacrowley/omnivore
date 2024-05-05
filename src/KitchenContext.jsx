@@ -12,16 +12,18 @@ import {
 } from "./api/airtable/Shopping"; // Import your API functions
 import { getMeals } from "./api/airtable/Meal"; // Import your API functions
 import { findThreads, getThreadMessages } from "./api/openai/findThreads";
-
+import { updatedAssistant } from "./api/openai/assistant";
 const KitchenContext = createContext();
 
 export const useKitchen = () => useContext(KitchenContext);
 
 export const RecipeProvider = ({ children }) => {
+  const assistant_id = process.env.REACT_APP_ASSISTANT_ID;
+
   const [recipes, setRecipes] = useState([]);
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
-  const [messageList, setMessageList] = useState(null);
+  const [messageList, setMessageList] = useState([]);
   const [mealPlans, setMealPlans] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -138,12 +140,19 @@ export const RecipeProvider = ({ children }) => {
     fetchThreadMessages();
   }, []);
 
+  useEffect(() => {
+    if (assistant_id) {
+      updatedAssistant(assistant_id);
+    }
+  }, [assistant_id]);
+
   const providerValue = {
     threads,
     setSelectedThread,
     fetchThreadMessages,
     selectedThread,
     messageList,
+    setMessageList,
     recipes,
     mealPlans,
     shoppingList,

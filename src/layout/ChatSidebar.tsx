@@ -71,7 +71,9 @@ export const ChatSidebar = (props: StackProps) => {
             lineHeight="1.25rem"
           >
             <Text fontWeight="medium">{thread.topic}</Text>
-            <Text opacity={0.8}>Created:{thread.created_at}</Text>
+            <Text opacity={0.8}>
+              Created: {new Date(thread.created_at * 1000).toLocaleString()}
+            </Text>
           </Stack>
         </Link>
       ))}

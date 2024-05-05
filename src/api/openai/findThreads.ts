@@ -13,9 +13,27 @@ interface OpenAIThread {
   };
 }
 
+interface Content {
+  type: "text" | "image"; // Adjust based on actual usage
+  text?: {
+    value: string;
+  };
+  // Add other properties based on your actual data structure
+}
+
 interface EnrichedThread extends OpenAIThread {
   topic: string;
   updatedAt: string | undefined; // Now allows undefined
+}
+
+// Define the structure of the message and the data you expect to manipulate
+interface Message {
+  role: string;
+  content: { type: string; text?: { value: string } }[];
+}
+
+interface ThreadMessages {
+  body: { data: Message[] };
 }
 
 async function findThreads(): Promise<EnrichedThread[]> {
@@ -48,18 +66,57 @@ async function findThreads(): Promise<EnrichedThread[]> {
 
 async function getThreadMessages(id: string) {
   try {
+    // Simulating the API call to fetch messages from a thread
     const messages = await openai.beta.threads.messages.list(id);
 
     console.log("getThreadMessages", messages);
 
-    return messages;
+    // Map the messages to a simpler format before returning
+    //@ts-ignore
+    const mappedMessages = messages.body.data.reverse().map((message) => {
+      const role = message.role;
+      const textContent =
+        message.content.find((content: Content) => content.type === "text")
+          ?.text?.value || "";
+
+      return {
+        role: role,
+        text: textContent,
+      };
+    });
+
+    return mappedMessages; // Return the mapped messages
   } catch (error) {
     console.error("Failed to retrieve threads:", error);
-    // Depending on your error handling strategy, you might want to rethrow, handle or log the error differently
-    throw error;
+    throw error; // Rethrow the error after logging
   }
 }
+// Send a new message to a thread
+async function addMessage(threadId: string, text: string) {
+  await openai.beta.threads.messages.create(threadId, {
+    role: "user",
+    content: text,
+  });
 
-export { findThreads, getThreadMessages };
+  const stream = openai.beta.threads.runs.stream(threadId, {
+    assistant_id: "asst_Hbmi76iEKiYzSSr40Ve8GHm9",
+  });
+
+  return new Response(stream.toReadableStream());
+}
+
+// Send a new message to a thread
+async function addTool(toolCallOutputs: any, runId: string, threadId: string) {
+  const stream = openai.beta.threads.runs.submitToolOutputsStream(
+    threadId,
+    runId,
+    // { tool_outputs: [{ output: result, tool_call_id: toolCallId }] },
+    { tool_outputs: toolCallOutputs }
+  );
+
+  return new Response(stream.toReadableStream());
+}
+
+export { findThreads, getThreadMessages, addMessage, addTool };
 
 export type { EnrichedThread };
