@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Box, Image, SkeletonCircle } from "@chakra-ui/react";
+import {
+  Box,
+  Image,
+  SkeletonCircle,
+  useColorModeValue as mode,
+} from "@chakra-ui/react";
 import { getRecipeById, RecipeItem } from "../api/airtable/Recipe";
 import { handleRecipeImageUpdate } from "../api/openai/makeIcon";
 import { Attachment } from "airtable"; // Assuming FieldSet is available to import
@@ -53,7 +58,11 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
       alignItems={"center"}
     >
       {loading ? (
-        <SkeletonCircle size="125px" />
+        <Image
+          borderRadius={"125px"}
+          backgroundColor={mode("gray.100", "gray.700")}
+          style={{ filter: "grayscale(100%)" }}
+        />
       ) : (
         images.length > 0 && (
           <Image
@@ -61,7 +70,9 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
             alt={`Recipe image ${currentIndex + 1}`}
             onClick={handleImageClick}
             borderRadius={"125px"}
+            backgroundColor={mode("gray.100", "gray.700")}
             style={{ filter: "grayscale(100%)" }}
+            onLoad={() => setLoading(false)}
           />
         )
       )}

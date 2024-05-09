@@ -27,7 +27,13 @@ import { ColumnButton } from "../layout/Column";
 
 export const AddMeal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { selectedRecipe, shoppingList, mealPlans } = useKitchen();
+  const {
+    selectedRecipe,
+    shoppingList,
+    mealPlans,
+    fetchMeals,
+    handleNavSelection,
+  } = useKitchen();
   const [loading, setLoading] = useState(false);
   const [useExisting, setUseExisting] = useState(false);
   const [selectedMealPlanId, setSelectedMealPlanId] = useState("");
@@ -39,9 +45,9 @@ export const AddMeal = () => {
     try {
       await processMealPlan(
         selectedRecipe,
-        shoppingList,
         useExisting,
-        selectedMealPlanId || null
+        selectedMealPlanId || undefined,
+        shoppingList
       );
       toast({
         title: "Meal plan processed successfully.",
@@ -50,6 +56,9 @@ export const AddMeal = () => {
         duration: 5000,
         isClosable: true,
       });
+
+      await fetchMeals();
+      handleNavSelection("Meal plan");
       onClose(); // Close the drawer on success
     } catch (error) {
       const errorMessage =

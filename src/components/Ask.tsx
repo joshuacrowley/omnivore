@@ -8,9 +8,10 @@ import speak from "../api/openai/speak";
 
 interface AskProps {
   questionContext: string;
+  shortCutActive: boolean;
 }
 
-const Ask: React.FC<AskProps> = ({ questionContext }) => {
+const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
   const [asking, setAsking] = useState(false);
   const toast = useToast();
 
@@ -22,8 +23,10 @@ const Ask: React.FC<AskProps> = ({ questionContext }) => {
   // Event handlers for keyboard
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "a" && !recording) {
-      startRecording();
-      handleAskClick();
+      if (shortCutActive) {
+        startRecording();
+        handleAskClick();
+      }
     }
   };
 

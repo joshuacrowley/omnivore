@@ -21,6 +21,7 @@ export const RecipeProvider = ({ children }) => {
   const assistant_id = process.env.REACT_APP_ASSISTANT_ID;
 
   const [recipes, setRecipes] = useState([]);
+  const [shortCutActive, setShortCutActive] = useState(true);
   const [threads, setThreads] = useState([]);
   const [selectedThread, setSelectedThread] = useState(null);
   const [messageList, setMessageList] = useState([]);
@@ -28,7 +29,7 @@ export const RecipeProvider = ({ children }) => {
   const [shoppingList, setShoppingList] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [selectedMealPlan, setSelectedMealPlan] = useState(null);
-  const [selectedNav, setSelectedNav] = useState("Chat"); // This can be "Recipes", "Shopping", "Meal plan"
+  const [selectedNav, setSelectedNav] = useState("Recipes"); // This can be "Recipes", "Shopping", "Meal plan"
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -170,6 +171,8 @@ export const RecipeProvider = ({ children }) => {
     fetchMeals,
     handleNavSelection,
     updateShoppingListItem,
+    shortCutActive,
+    setShortCutActive,
   };
 
   return (

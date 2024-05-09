@@ -96,7 +96,11 @@ export const Layout = () => {
               )}
 
               {mainIsScrolled && selectedNav === "Meal plan" && (
-                <ColumnHeading>{selectedMealPlan.name}</ColumnHeading>
+                <ColumnHeading>
+                  {selectedMealPlan
+                    ? selectedMealPlan.name
+                    : "No meal selected"}
+                </ColumnHeading>
               )}
 
               {mainIsScrolled && selectedNav === "Chat" && (

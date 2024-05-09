@@ -1,15 +1,46 @@
 import { openai } from "./OpenAi";
 
+const getOrCreateVectorStore = async (assistant_id: string) => {
+  const assistant = await openai.beta.assistants.retrieve(assistant_id);
+
+  // if the assistant already has a vector store, return it
+  //@ts-ignore
+  if (assistant.tool_resources?.file_search?.vector_store_ids?.length > 0) {
+    //@ts-ignore
+    return assistant.tool_resources.file_search.vector_store_ids[0];
+  }
+  // otherwise, create a new vector store and attatch it to the assistant
+  const vectorStore = await openai.beta.vectorStores.create({
+    name: "sample-assistant-vector-store",
+  });
+  await openai.beta.assistants.update(assistant_id, {
+    tool_resources: {
+      file_search: {
+        vector_store_ids: [vectorStore.id],
+      },
+    },
+  });
+  return vectorStore.id;
+};
+
 async function updatedAssistant(assistant_id: string) {
   try {
+    const vectorStoreId = await getOrCreateVectorStore(assistant_id); // get or create vector store
+
     const myUpdatedAssistant = await openai.beta.assistants.update(
       assistant_id,
       {
         instructions:
           "You are a helpful assistant that helps manage recipes, access and maintain shopping lists and meal plans.",
         name: "Chef CKJ",
+        tool_resources: {
+          file_search: {
+            vector_store_ids: [vectorStoreId],
+          },
+        },
         tools: [
           { type: "file_search" },
+
           {
             type: "function",
             function: {
@@ -47,4 +78,4 @@ async function updatedAssistant(assistant_id: string) {
 //   return JSON.stringify(data);
 // };
 
-export { updatedAssistant };
+export { updatedAssistant, getOrCreateVectorStore };

@@ -1,5 +1,6 @@
 import { openai } from "./OpenAi";
 import { airtable } from "../airtable/Airtable";
+import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
 
 // Function to create a prompt to send to the OpenAI API
 async function addRecipe(prompt) {
@@ -38,20 +39,6 @@ async function addRecipe(prompt) {
   return response.choices[0];
 }
 
-// Function to map and insert data to Airtable
-async function insertToAirtable(fields) {
-  // Promisify the Airtable create function
-  return new Promise((resolve, reject) => {
-    airtable("Recipes").create([{ fields }], function (err, records) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(records);
-    });
-  });
-}
-
 // Main function to process the text prompt and update Airtable
 async function runRecipe(prompt, { setSelectedRecipe, fetchRecipes }) {
   try {
@@ -63,7 +50,7 @@ async function runRecipe(prompt, { setSelectedRecipe, fetchRecipes }) {
     const recipeData = JSON.parse(openaiResponse.message.content);
 
     // Insert the parsed data into Airtable
-    const records = await insertToAirtable(recipeData);
+    const records = await addRecipeToAirtable(recipeData);
 
     // Set the newly created recipe ID as the selectedRecipeId if needed
     if (records.length > 0) {

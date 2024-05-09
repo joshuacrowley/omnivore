@@ -26,7 +26,7 @@ import { ColumnButton } from "../layout/Column";
 
 export const AddRecipe = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { setSelectedRecipe, fetchRecipes } = useKitchen();
+  const { setSelectedRecipe, fetchRecipes, setShortCutActive } = useKitchen();
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState("");
   const toast = useToast();
@@ -109,6 +109,8 @@ export const AddRecipe = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe the recipe to add..."
+                  onFocus={() => setShortCutActive(false)}
+                  onBlur={() => setShortCutActive(true)}
                 />
               </Box>
               <Listen
