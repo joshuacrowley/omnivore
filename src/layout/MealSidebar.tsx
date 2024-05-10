@@ -14,7 +14,12 @@ import {
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
 import { MealItem } from "../api/airtable/Meal";
 
-export const MealsSidebar = (props: StackProps) => {
+// Extend StackProps to include an optional onClose prop
+interface MealSidebarProps extends StackProps {
+  onClose?: () => void;
+}
+
+export const MealsSidebar = (props: MealSidebarProps) => {
   const { selectedMealPlan, mealPlans, setSelectedMealPlan, error, loading } =
     useKitchen(); // Destructure the necessary state and functions from context
 
@@ -50,7 +55,12 @@ export const MealsSidebar = (props: StackProps) => {
       {mealPlans.map((meal: MealItem) => (
         <Link
           key={meal.id}
-          onClick={() => setSelectedMealPlan(meal)} // Set the selectedmealId in context
+          onClick={() => {
+            setSelectedMealPlan(meal);
+            if (props.onClose) {
+              props.onClose();
+            }
+          }} // Set the selectedmealId in context
           aria-current={meal.id === selectedMealPlan.id ? "page" : undefined} // Highlight the current meal
           _hover={{
             textDecoration: "none",

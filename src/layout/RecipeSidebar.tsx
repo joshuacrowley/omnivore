@@ -14,7 +14,12 @@ import {
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
 import { RecipeItem } from "../api/airtable/Recipe";
 
-export const RecipeSidebar = (props: StackProps) => {
+// Extend StackProps to include an optional onClose prop
+interface RecipeSidebarProps extends StackProps {
+  onClose?: () => void;
+}
+
+export const RecipeSidebar = (props: RecipeSidebarProps) => {
   const { recipes, selectedRecipe, setSelectedRecipe, loading, error } =
     useKitchen(); // Destructure the necessary state and functions from context
 
@@ -54,7 +59,12 @@ export const RecipeSidebar = (props: StackProps) => {
       {recipes.map((recipe: RecipeItem) => (
         <Link
           key={recipe.id}
-          onClick={() => setSelectedRecipe(recipe)} // Set the selectedRecipeId in context
+          onClick={() => {
+            setSelectedRecipe(recipe);
+            if (props.onClose) {
+              props.onClose();
+            }
+          }} // Set the selectedRecipeId in context
           aria-current={recipe.id === selectedRecipe.id ? "page" : undefined} // Highlight the current recipe
           _hover={{
             textDecoration: "none",

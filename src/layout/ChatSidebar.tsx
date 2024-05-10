@@ -15,7 +15,12 @@ import { format } from "date-fns";
 import { useKitchen } from "../KitchenContext"; // Ensure this path is correct
 import { EnrichedThread } from "../api/openai/findThreads"; // Ensure this path is correct
 
-export const ChatSidebar = (props: StackProps) => {
+// Extend StackProps to include an optional onClose prop
+interface ChatSidebarProps extends StackProps {
+  onClose?: () => void;
+}
+
+export const ChatSidebar = (props: ChatSidebarProps) => {
   const { threads, selectedThread, setSelectedThread, loading, error } =
     useKitchen();
 
@@ -54,7 +59,12 @@ export const ChatSidebar = (props: StackProps) => {
       {threads.map((thread: EnrichedThread) => (
         <Link
           key={thread.id}
-          onClick={() => setSelectedThread(thread)}
+          onClick={() => {
+            setSelectedThread(thread);
+            if (props.onClose) {
+              props.onClose();
+            }
+          }}
           aria-current={thread.id === selectedThread?.id ? "page" : undefined}
           _hover={{
             textDecoration: "none",

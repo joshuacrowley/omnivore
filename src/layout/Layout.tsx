@@ -5,12 +5,18 @@ import {
   DrawerOverlay,
   Flex,
   HStack,
+  VStack,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiArrowLeft, FiPlus, FiMenu, FiRss } from "react-icons/fi";
-import { ColumnHeader, ColumnHeading, ColumnIconButton } from "./Column";
+import {
+  ColumnHeader,
+  ColumnHeading,
+  ColumnIconButton,
+  ColumnButton,
+} from "./Column";
 import { Main } from "./Main";
 import { Navbar } from "./Navigation";
 import { RecipeSidebar } from "./RecipeSidebar";
@@ -25,7 +31,9 @@ import { AddShopping } from "../components/AddShopping";
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
   const [mainIsScrolled, setmMainIsScrolled] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const sideBarDisclosure = useDisclosure();
+  const NavDisclosure = useDisclosure();
+
   const { selectedNav, selectedRecipe, selectedThread, selectedMealPlan } =
     useKitchen(); // Destructure the necessary state and functions from context
 
@@ -51,29 +59,59 @@ export const Layout = () => {
           <HStack justify="space-between" width="full">
             <HStack spacing="3">
               <ColumnIconButton
-                onClick={onOpen}
+                onClick={NavDisclosure.onOpen}
                 aria-label="Open Navigation"
                 icon={<FiMenu />}
                 display={{ md: "inline-flex", lg: "none" }}
               />
-              <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+              <Drawer
+                isOpen={NavDisclosure.isOpen}
+                placement="left"
+                onClose={NavDisclosure.onClose}
+              >
                 <DrawerOverlay />
                 <DrawerContent>
-                  <Navbar onClose={onClose} />
+                  <Navbar onClose={NavDisclosure.onClose} />
                 </DrawerContent>
               </Drawer>
               <ColumnHeading>{selectedNav}</ColumnHeading>
             </HStack>
-
             {selectedNav === "Recipes" && <AddRecipe />}
             {selectedNav === "Shopping" && <AddShopping />}
           </HStack>
         </ColumnHeader>
 
-        {selectedNav === "Recipes" && <RecipeSidebar />}
-        {selectedNav === "Shopping" && <ShoppingSideBar />}
-        {selectedNav === "Meal plan" && <MealsSidebar />}
-        {selectedNav === "Chat" && <ChatSidebar />}
+        <Box display={{ md: "none", lg: "block" }}>
+          {selectedNav === "Recipes" && <RecipeSidebar />}
+          {selectedNav === "Shopping" && <ShoppingSideBar />}
+          {selectedNav === "Meal plan" && <MealsSidebar />}
+          {selectedNav === "Chat" && <ChatSidebar />}
+        </Box>
+
+        <Drawer
+          isOpen={sideBarDisclosure.isOpen}
+          placement="right"
+          onClose={sideBarDisclosure.onClose}
+        >
+          <DrawerOverlay />
+          <DrawerContent>
+            <Box height="full" overflowY="auto">
+              <ColumnHeader>
+                <ColumnHeading>{selectedNav}</ColumnHeading>
+              </ColumnHeader>
+              {selectedNav === "Recipes" && (
+                <RecipeSidebar onClose={sideBarDisclosure.onClose} />
+              )}
+              {selectedNav === "Shopping" && <ShoppingSideBar />}
+              {selectedNav === "Meal plan" && (
+                <MealsSidebar onClose={sideBarDisclosure.onClose} />
+              )}
+              {selectedNav === "Chat" && (
+                <ChatSidebar onClose={sideBarDisclosure.onClose} />
+              )}
+            </Box>
+          </DrawerContent>
+        </Drawer>
       </Box>
       <Box
         bg={useColorModeValue("white", "gray.900")}
@@ -83,32 +121,40 @@ export const Layout = () => {
       >
         <ColumnHeader shadow={mainIsScrolled ? "base" : "none"}>
           <HStack justify="space-between" width="full">
-            <HStack spacing="3">
+            <HStack spacing="4">
               <ColumnIconButton
-                onClick={onOpen}
+                onClick={NavDisclosure.onOpen}
                 aria-label="Navigate back"
                 icon={<FiArrowLeft />}
                 display={{ base: "inline-flex", md: "none" }}
               />
-
-              {mainIsScrolled && selectedNav === "Recipes" && (
-                <ColumnHeading>{selectedRecipe.name}</ColumnHeading>
-              )}
-
-              {mainIsScrolled && selectedNav === "Meal plan" && (
-                <ColumnHeading>
-                  {selectedMealPlan
-                    ? selectedMealPlan.name
-                    : "No meal selected"}
-                </ColumnHeading>
-              )}
-
-              {mainIsScrolled && selectedNav === "Chat" && (
-                <ColumnHeading>{selectedThread.topic}</ColumnHeading>
-              )}
             </HStack>
 
-            {selectedNav === "Recipes" && <AddMeal />}
+            {mainIsScrolled && selectedNav === "Recipes" && (
+              <ColumnHeading width={{ base: "50%", md: "100%" }}>
+                {selectedRecipe.name}
+              </ColumnHeading>
+            )}
+
+            {mainIsScrolled && selectedNav === "Meal plan" && (
+              <ColumnHeading>
+                {selectedMealPlan ? selectedMealPlan.name : "No meal selected"}
+              </ColumnHeading>
+            )}
+
+            {mainIsScrolled && selectedNav === "Chat" && (
+              <ColumnHeading>{selectedThread.topic}</ColumnHeading>
+            )}
+
+            {selectedNav !== "Shopping" && (
+              <ColumnButton
+                onClick={sideBarDisclosure.onOpen}
+                aria-label="All Recipes"
+                display={{ base: "inline-flex", md: "none" }}
+              >
+                {`Change ${selectedNav}`}
+              </ColumnButton>
+            )}
           </HStack>
         </ColumnHeader>
 
@@ -116,7 +162,7 @@ export const Layout = () => {
           <ShoppingSideBar display={{ md: "none" }} />
         )}
 
-        <Main maxW="3xl" mx="auto" py="8" px={{ base: "4", md: "8" }} />
+        <Main maxW="3xl" mx="auto" py="8" px={{ base: "6", md: "8" }} />
       </Box>
     </Flex>
   );
