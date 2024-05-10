@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { format } from "date-fns";
 import { useKitchen } from "../KitchenContext"; // Ensure this path is correct
-import { EnrichedThread } from "../api/openai/findThreads"; // Ensure this path is correct
+import { EnrichedThread } from "../api/openai/threads"; // Ensure this path is correct
 
 // Extend StackProps to include an optional onClose prop
 interface ChatSidebarProps extends StackProps {

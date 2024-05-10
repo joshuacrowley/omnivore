@@ -8,6 +8,7 @@ import {
   Heading,
   Code,
   Link,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 // Define the types for the messages and content
@@ -41,24 +42,36 @@ const markdownOptions = {
   },
 };
 
-export const ChatMessage = ({ message }: Props) => {
-  const { role, content } = message;
+type MessageProps = {
+  role: "user" | "assistant" | "code";
+  text: string;
+};
+
+export const ChatMessage = ({ role, text }: MessageProps) => {
+  const bgColor = useColorModeValue(
+    role === "user" ? "blue.50" : "gray.50",
+    role === "user" ? "blue.700" : "gray.700"
+  );
+  const align = role === "user" ? "flex-start" : "flex-end";
+  const textColor = useColorModeValue("gray.800", "white");
 
   return (
-    <HStack align="flex-start" gap="5">
-      <Box pt="1">
-        <Avatar size="sm" name={role} />
+    <HStack align="flex-start" gap="5" width="full">
+      <Box width="full">
+        <HStack align={align} gap="5" width="full" my={2}>
+          <Text as="b">{role === "user" ? "You" : "CK"}</Text>
+        </HStack>
+        <Box
+          bg={bgColor}
+          color={textColor}
+          px={6}
+          py={3}
+          borderRadius="lg"
+          maxWidth="100%"
+        >
+          <Markdown options={markdownOptions}>{text || ""}</Markdown>
+        </Box>
       </Box>
-      <Stack spacing="1">
-        <Text fontWeight="medium">{role}</Text>
-        {content.map((item) => (
-          <Stack spacing="2">
-            <Box color="fg.muted" lineHeight="tall">
-              <Markdown markdownOptions>{item.text?.value || ""}</Markdown>
-            </Box>
-          </Stack>
-        ))}
-      </Stack>
     </HStack>
   );
 };

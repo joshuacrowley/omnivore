@@ -11,7 +11,7 @@ import {
   updateShoppingItem,
 } from "./api/airtable/Shopping"; // Import your API functions
 import { getMeals } from "./api/airtable/Meal"; // Import your API functions
-import { findThreads, getThreadMessages } from "./api/openai/findThreads";
+import { findThreads, getThreadMessages } from "./api/openai/threads";
 import { updatedAssistant } from "./api/openai/assistant";
 const KitchenContext = createContext();
 

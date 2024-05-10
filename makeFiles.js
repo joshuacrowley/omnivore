@@ -1,4 +1,5 @@
-require("dotenv").config();
+require("dotenv").config({ path: ".env.local" }); // Specify the path to your .env.local file
+
 const Airtable = require("airtable");
 const fs = require("fs");
 const { OpenAI } = require("openai");
@@ -22,8 +23,19 @@ const getRecipes = async () => {
   }));
 };
 
+const date = new Date();
+const timestamp = `${date.getFullYear()}-${(date.getMonth() + 1)
+  .toString()
+  .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}_${date
+  .getHours()
+  .toString()
+  .padStart(2, "0")}-${date.getMinutes().toString().padStart(2, "0")}-${date
+  .getSeconds()
+  .toString()
+  .padStart(2, "0")}`;
+
 const saveRecipeAsMarkdown = async (recipe) => {
-  const filePath = `./recipes/${recipe.id}.md`;
+  const filePath = `./recipes/${recipe.name}-${recipe.id}-${timestamp}.md`;
   const content = `# ${recipe.name}\n\n${recipe.ingredients}\n\n${recipe.method}\n\n Serves :${recipe.serves}`;
   fs.writeFileSync(filePath, content);
   return filePath;
@@ -55,13 +67,27 @@ const uploadAndAttachFile = async (filePath) => {
   await openai.beta.vectorStores.files.create(vectorStoreId, {
     file_id: openaiFile.id,
   });
+  return openaiFile.id; // Return the file ID
+};
+
+// Function to update the Airtable record with the file ID
+const updateRecipeRecord = async (recipeId, fileId) => {
+  await base("Recipes").update([
+    {
+      id: recipeId,
+      fields: {
+        fileId: fileId,
+      },
+    },
+  ]);
 };
 
 const processRecipes = async () => {
   const recipes = await getRecipes();
   for (let recipe of recipes) {
     const filePath = await saveRecipeAsMarkdown(recipe);
-    //await uploadAndAttachFile(filePath);
+    const fileId = await uploadAndAttachFile(filePath); // Get the file ID after uploading
+    await updateRecipeRecord(recipe.id, fileId); // Update the Airtable record with the file ID
   }
 };
 

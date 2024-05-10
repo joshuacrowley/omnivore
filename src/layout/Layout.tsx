@@ -27,6 +27,7 @@ import { useKitchen } from "../KitchenContext"; // Update import path if necessa
 import { AddMeal } from "../components/AddMeal";
 import { AddRecipe } from "../components/AddRecipe";
 import { AddShopping } from "../components/AddShopping";
+import { AddThread } from "../components/AddThread";
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
@@ -78,6 +79,7 @@ export const Layout = () => {
             </HStack>
             {selectedNav === "Recipes" && <AddRecipe />}
             {selectedNav === "Shopping" && <AddShopping />}
+            {selectedNav === "Chat" && <AddThread />}
           </HStack>
         </ColumnHeader>
 

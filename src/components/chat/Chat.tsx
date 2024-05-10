@@ -1,30 +1,36 @@
 // @ts-nocheck
 
 import React, { useState, useEffect, useRef } from "react";
+import {
+  Link,
+  Stack,
+  StackProps,
+  Text,
+  useColorModeValue as mode,
+  Skeleton,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Button,
+  Input,
+  Flex,
+  Textarea,
+  Heading,
+} from "@chakra-ui/react";
 import styles from "./chat.module.css";
 import { AssistantStream } from "openai/lib/AssistantStream";
 import Markdown from "markdown-to-jsx";
 // @ts-expect-error - no types for this yet
 import { AssistantStreamEvent } from "openai/resources/beta/assistants/assistants";
 import { RequiredActionFunctionToolCall } from "openai/resources/beta/threads/runs/runs";
-import { addMessage, addTool } from "../../api/openai/findThreads";
+import { addMessage, addTool } from "../../api/openai/threads";
 import { useKitchen } from "../../KitchenContext";
+import { ChatMessage } from "./ChatMessage";
 
 type MessageProps = {
   role: "user" | "assistant" | "code";
   text: string;
-};
-
-const UserMessage = ({ text }: { text: string }) => {
-  return <div className={styles.userMessage}>{text}</div>;
-};
-
-const AssistantMessage = ({ text }: { text: string }) => {
-  return (
-    <div className={styles.assistantMessage}>
-      <Markdown>{text}</Markdown>
-    </div>
-  );
 };
 
 const CodeMessage = ({ text }: { text: string }) => {
@@ -43,9 +49,9 @@ const CodeMessage = ({ text }: { text: string }) => {
 const Message = ({ role, text }: MessageProps) => {
   switch (role) {
     case "user":
-      return <UserMessage text={text} />;
+      return <ChatMessage text={text} role="user" />;
     case "assistant":
-      return <AssistantMessage text={text} />;
+      return <ChatMessage text={text} role="assistant" />;
     case "code":
       return <CodeMessage text={text} />;
     default:
@@ -64,14 +70,21 @@ const Chat = ({
 }: ChatProps) => {
   const { messageList, fetchThreadMessages, selectedThread } = useKitchen();
 
-  console.log("messageList", messageList);
-
   const [userInput, setUserInput] = useState("");
   const [messages, setMessages] = useState(messageList || []);
   const [inputDisabled, setInputDisabled] = useState(false);
-  const [threadId, setThreadId] = useState("");
 
-  // automitcally scroll to bottom of chat
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "0px"; // Set height to 0 to reset the scroll height calculation
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = scrollHeight + "px";
+    }
+  }, [userInput]); // Recalculate height when userInput changes
+
+  // automatically scroll to bottom of chat
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -87,6 +100,13 @@ const Chat = ({
   useEffect(() => {
     setMessages(messageList);
   }, [messageList]);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevent the default Enter key behavior
+      handleSubmit(event); // Trigger form submit
+    }
+  };
 
   const sendMessage = async (text: string) => {
     const response = await addMessage(selectedThread.id, text);
@@ -236,30 +256,63 @@ const Chat = ({
   return (
     <div className={styles.chatContainer}>
       <div className={styles.messages}>
-        {messages.map((msg, index) => (
-          <Message key={index} role={msg.role} text={msg.text} />
-        ))}
+        {messages.length === 0 && <Heading>Ask me about your recipes</Heading>}
+
+        <Stack gap={4}>
+          {messages.map((msg, index) => (
+            <Message key={index} role={msg.role} text={msg.text} />
+          ))}
+        </Stack>
         <div ref={messagesEndRef} />
       </div>
-      <form
+      <Flex
+        as="form"
         onSubmit={handleSubmit}
-        className={`${styles.inputForm} ${styles.clearfix}`}
+        align="center"
+        padding="10px"
+        paddingBottom="40px"
+        width="100%"
       >
-        <input
-          type="text"
-          className={styles.input}
+        <Textarea
+          ref={textareaRef}
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Enter your question"
+          flexGrow={1}
+          marginRight="10px"
+          padding="16px 24px"
+          borderRadius="20px"
+          border="2px solid transparent"
+          fontSize="1em"
+          bgColor="#efefef"
+          resize="none"
+          minHeight="40px" // Set a minimum height to maintain a consistent initial size
+          _focus={{
+            outline: "none",
+            borderColor: "#000",
+            bgColor: "white",
+          }}
+          overflow="hidden" // Prevent scrollbars
+          onKeyDown={handleKeyDown} // Add the key down handler
         />
-        <button
+        <Button
           type="submit"
-          className={styles.button}
           disabled={inputDisabled}
+          padding="8px 24px"
+          bgColor="black"
+          color="white"
+          fontSize="1em"
+          borderRadius="60px"
+          _hover={{
+            bg: "gray.700", // Optional: Change button hover color
+          }}
+          _disabled={{
+            bgColor: "lightgrey",
+          }}
         >
           Send
-        </button>
-      </form>
+        </Button>
+      </Flex>
     </div>
   );
 };

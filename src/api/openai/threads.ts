@@ -1,5 +1,5 @@
 import { openai } from "./OpenAi";
-import { getThreads, ThreadItem } from "../airtable/Threads";
+import { getThreads, ThreadItem, addThread } from "../airtable/Threads";
 
 interface OpenAIThread {
   id: string;
@@ -34,6 +34,10 @@ interface Message {
 
 interface ThreadMessages {
   body: { data: Message[] };
+}
+
+interface CreateThreadParams {
+  topic: string; // Example parameter, adjust based on your actual data structure
 }
 
 async function findThreads(): Promise<EnrichedThread[]> {
@@ -117,6 +121,29 @@ async function addTool(toolCallOutputs: any, runId: string, threadId: string) {
   return new Response(stream.toReadableStream());
 }
 
-export { findThreads, getThreadMessages, addMessage, addTool };
+// Function to create a new thread and add it to Airtable
+async function createThread(params: CreateThreadParams): Promise<any> {
+  try {
+    // Create a new thread via OpenAI
+    const newThread = await openai.beta.threads.create({});
+
+    // Prepare data for Airtable (assumed fields, please adjust as necessary)
+    const airtableData = {
+      threadId: newThread.id,
+      topic: params.topic,
+    };
+
+    // Add the new thread details to Airtable
+    addThread(airtableData);
+
+    // Return the new thread ID or the whole thread item based on your requirement
+    return newThread;
+  } catch (error) {
+    console.error("Failed to create a new thread:", error);
+    throw error; // Or handle the error as needed
+  }
+}
+
+export { findThreads, getThreadMessages, addMessage, addTool, createThread };
 
 export type { EnrichedThread };
