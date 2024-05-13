@@ -5,12 +5,11 @@ import {
   DrawerOverlay,
   Flex,
   HStack,
-  VStack,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FiArrowLeft, FiPlus, FiMenu, FiRss } from "react-icons/fi";
+import { FiArrowLeft, FiMenu } from "react-icons/fi";
 import {
   ColumnHeader,
   ColumnHeading,
@@ -24,7 +23,6 @@ import { ShoppingSideBar } from "./ShoppingSideBar";
 import { ChatSidebar } from "./ChatSidebar";
 import { MealsSidebar } from "./MealSidebar";
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
-import { AddMeal } from "../components/AddMeal";
 import { AddRecipe } from "../components/AddRecipe";
 import { AddShopping } from "../components/AddShopping";
 import { AddThread } from "../components/AddThread";
@@ -134,7 +132,7 @@ export const Layout = () => {
 
             {mainIsScrolled && selectedNav === "Recipes" && (
               <ColumnHeading width={{ base: "50%", md: "100%" }}>
-                {selectedRecipe.name}
+                {selectedRecipe ? selectedRecipe.name : ""}
               </ColumnHeading>
             )}
 
@@ -145,7 +143,9 @@ export const Layout = () => {
             )}
 
             {mainIsScrolled && selectedNav === "Chat" && (
-              <ColumnHeading>{selectedThread.topic}</ColumnHeading>
+              <ColumnHeading>
+                {selectedThread ? selectedThread.topic : ""}
+              </ColumnHeading>
             )}
 
             {selectedNav !== "Shopping" && (

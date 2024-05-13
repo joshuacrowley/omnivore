@@ -2,25 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Link,
   Stack,
-  StackProps,
-  Text,
   useColorModeValue as mode,
-  Skeleton,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
   Button,
-  Input,
   Flex,
   Textarea,
   Heading,
 } from "@chakra-ui/react";
-import styles from "./chat.module.css";
 import { AssistantStream } from "openai/lib/AssistantStream";
-import Markdown from "markdown-to-jsx";
 // @ts-expect-error - no types for this yet
 import { AssistantStreamEvent } from "openai/resources/beta/assistants/assistants";
 import { RequiredActionFunctionToolCall } from "openai/resources/beta/threads/runs/runs";
@@ -33,12 +22,31 @@ type MessageProps = {
   text: string;
 };
 
-const CodeMessage = ({ text }: { text: string }) => {
+const CodeMessage = ({ text }) => {
+  // Styles for the outer container
+  const containerStyle = {
+    padding: "10px 16px",
+    backgroundColor: "#e9e9e9",
+    fontFamily: "monospace",
+    counterReset: "line",
+  };
+
+  // Styles for each line's container
+  const lineContainerStyle = {
+    marginTop: "4px",
+  };
+
+  // Styles for the line number span
+  const lineNumberStyle = {
+    color: "#b8b8b8",
+    marginRight: "8px",
+  };
+
   return (
-    <div className={styles.codeMessage}>
+    <div style={containerStyle}>
       {text.split("\n").map((line, index) => (
-        <div key={index}>
-          <span>{`${index + 1}. `}</span>
+        <div key={index} style={lineContainerStyle}>
+          <span style={lineNumberStyle}>{`${index + 1}. `}</span>
           {line}
         </div>
       ))}
@@ -254,8 +262,8 @@ const Chat = ({
   console.log(messages);
 
   return (
-    <div className={styles.chatContainer}>
-      <div className={styles.messages}>
+    <div>
+      <div>
         {messages.length === 0 && <Heading>Ask me about your recipes</Heading>}
 
         <Stack gap={4}>

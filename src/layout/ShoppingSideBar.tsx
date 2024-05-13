@@ -19,7 +19,7 @@ import {
   FormLabel,
   Flex,
 } from "@chakra-ui/react";
-import { RecipeItem } from "../api/airtable/Recipe";
+
 import { ShoppingItem } from "../api/airtable/Shopping";
 import { useKitchen } from "../KitchenContext";
 
@@ -27,7 +27,7 @@ export const ShoppingSideBar = (props: StackProps) => {
   const {
     shoppingList,
     updateShoppingListItem,
-    recipes,
+
     setShoppingList,
     loading,
     error,

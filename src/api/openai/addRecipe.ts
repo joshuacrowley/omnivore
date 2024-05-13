@@ -1,9 +1,9 @@
 import { openai } from "./OpenAi";
-import { airtable } from "../airtable/Airtable";
 import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
+import { KitchenContextType } from "../../KitchenContext";
 
 // Function to create a prompt to send to the OpenAI API
-async function addRecipe(prompt) {
+async function addRecipe(prompt: string) {
   const response = await openai.chat.completions.create({
     model: "gpt-4-turbo",
     response_format: { type: "json_object" },
@@ -39,25 +39,37 @@ async function addRecipe(prompt) {
   return response.choices[0];
 }
 
+type RunChefRecipeParams = Pick<
+  KitchenContextType,
+  "setSelectedRecipe" | "fetchRecipes"
+>;
+
 // Main function to process the text prompt and update Airtable
-async function runRecipe(prompt, { setSelectedRecipe, fetchRecipes }) {
+async function runRecipe(
+  prompt: string,
+  { setSelectedRecipe, fetchRecipes }: RunChefRecipeParams
+) {
   try {
     // Fetch the recipe data from OpenAI
     const openaiResponse = await addRecipe(prompt);
+
+    if (openaiResponse.message.content === null) {
+      throw new Error("Received null content from OpenAI response");
+    }
 
     // Assuming OpenAI response is in openaiResponse.message.content and is a JSON string
     // Directly parsing the message content to form the fields object for Airtable
     const recipeData = JSON.parse(openaiResponse.message.content);
 
     // Insert the parsed data into Airtable
-    const records = await addRecipeToAirtable(recipeData);
+    const recipe = await addRecipeToAirtable(recipeData);
 
     // Set the newly created recipe ID as the selectedRecipeId if needed
-    if (records.length > 0) {
+    if (recipe) {
       await fetchRecipes(); // Refresh the recipes list
-      setSelectedRecipe({ ...records[0].fields, id: records[0].id }); // Update the selected recipe
+      setSelectedRecipe({ ...recipe }); // Update the selected recipe
 
-      console.log("New recipe added:", records[0]);
+      console.log("New recipe added:", recipe);
     }
   } catch (error) {
     console.error("Failed to process and upload the recipe:", error);

@@ -1,8 +1,10 @@
 import { openai } from "./OpenAi";
-import { airtable } from "../airtable/Airtable";
+import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
+
+import { KitchenContextType } from "../../KitchenContext";
 
 // Function to create a prompt to send to the OpenAI API
-async function addRecipe(base64Image) {
+async function addRecipe(base64Image: string) {
   const response = await openai.chat.completions.create({
     model: "gpt-4-turbo",
     response_format: { type: "json_object" },
@@ -54,39 +56,37 @@ Remember the fields are name, ingredients, method and serves.
   return response.choices[0];
 }
 
-// Function to map and insert data to Airtable
-async function insertToAirtable(fields) {
-  // Promisify the Airtable create function
-  return new Promise((resolve, reject) => {
-    airtable("Recipes").create([{ fields }], function (err, records) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(records);
-    });
-  });
-}
+type RunChefRecipeParams = Pick<
+  KitchenContextType,
+  "setSelectedRecipe" | "fetchRecipes"
+>;
 
 // Main function to process the text prompt and update Airtable
-async function runRecipe(base64Image, { setSelectedRecipe, fetchRecipes }) {
+async function runRecipe(
+  base64Image: string,
+  { setSelectedRecipe, fetchRecipes }: RunChefRecipeParams
+) {
   try {
     // Fetch the recipe data from OpenAI
     const openaiResponse = await addRecipe(base64Image);
+
+    if (openaiResponse.message.content === null) {
+      throw new Error("Received null content from OpenAI response");
+    }
 
     // Assuming OpenAI response is in openaiResponse.message.content and is a JSON string
     // Directly parsing the message content to form the fields object for Airtable
     const recipeData = JSON.parse(openaiResponse.message.content);
 
     // Insert the parsed data into Airtable
-    const records = await insertToAirtable(recipeData);
+    const recipe = await addRecipeToAirtable(recipeData);
 
     // Set the newly created recipe ID as the selectedRecipeId if needed
-    if (records.length > 0) {
+    if (recipe) {
       await fetchRecipes(); // Refresh the recipes list
-      setSelectedRecipe({ ...records[0].fields, id: records[0].id }); // Update the selected recipe
+      setSelectedRecipe({ ...recipe }); // Update the selected recipe
 
-      console.log("New recipe added:", records[0]);
+      console.log("New recipe added:", recipe);
     }
   } catch (error) {
     console.error("Failed to process and upload the recipe:", error);

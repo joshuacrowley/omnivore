@@ -109,10 +109,12 @@ export const Main = (props: BoxProps) => {
               <Markdown>
                 {selectedRecipe.ingredients ?? "No ingredients"}
               </Markdown>
-              <SpeakButton
-                input={selectedRecipe.method}
-                label={"Read method"}
-              />
+              {selectedRecipe.method && (
+                <SpeakButton
+                  input={selectedRecipe.method}
+                  label={"Read method"}
+                />
+              )}
               <Markdown>{selectedRecipe.method ?? "No method"}</Markdown>
             </Stack>
           </Stack>

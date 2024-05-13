@@ -26,16 +26,6 @@ interface EnrichedThread extends OpenAIThread {
   updatedAt: string | undefined; // Now allows undefined
 }
 
-// Define the structure of the message and the data you expect to manipulate
-interface Message {
-  role: string;
-  content: { type: string; text?: { value: string } }[];
-}
-
-interface ThreadMessages {
-  body: { data: Message[] };
-}
-
 interface CreateThreadParams {
   topic: string; // Example parameter, adjust based on your actual data structure
 }
@@ -73,8 +63,6 @@ async function getThreadMessages(id: string) {
     // Simulating the API call to fetch messages from a thread
     const messages = await openai.beta.threads.messages.list(id);
 
-    console.log("getThreadMessages", messages);
-
     // Map the messages to a simpler format before returning
     //@ts-ignore
     const mappedMessages = messages.body.data.reverse().map((message) => {
@@ -97,13 +85,17 @@ async function getThreadMessages(id: string) {
 }
 // Send a new message to a thread
 async function addMessage(threadId: string, text: string) {
+  if (!process.env.REACT_APP_ASSISTANT_ID) {
+    throw new Error("ENV REACT_APP_ASSISTANT_ID needs to be set");
+  }
+
   await openai.beta.threads.messages.create(threadId, {
     role: "user",
     content: text,
   });
 
   const stream = openai.beta.threads.runs.stream(threadId, {
-    assistant_id: "asst_Hbmi76iEKiYzSSr40Ve8GHm9",
+    assistant_id: process.env.REACT_APP_ASSISTANT_ID,
   });
 
   return new Response(stream.toReadableStream());

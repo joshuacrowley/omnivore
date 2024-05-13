@@ -11,41 +11,12 @@ interface ShoppingItem {
   recipeIds?: string[]; // Array of linked record IDs from the Recipes table
 }
 
-interface ShoppingFields {
-  item: string;
-  quantity: string;
-  category: string;
-  bought?: boolean;
-  recipeIds?: string[];
-}
-
 interface CreateShoppingItem {
   item: string;
   quantity: string;
   category: string;
   bought?: boolean;
   recipeIds?: string[];
-}
-
-// Interface to represent a record as returned by Airtable with metadata
-interface AirtableRecord {
-  id: string;
-  fields: ShoppingItem;
-}
-
-// Interface for responses from Airtable containing multiple records
-interface AirtableResponse {
-  records: AirtableRecord[];
-}
-
-interface ShoppingCreate {
-  fields: Omit<ShoppingItem, "id">;
-}
-
-interface AirtableBatchData {
-  ingredientsToUpdate?: AirtableRecord[];
-  ingredientsToAdd?: ShoppingCreate[];
-  ingredientsToRemove?: string[];
 }
 
 // Define an interface for updating a record in the "Shopping" table
@@ -166,81 +137,7 @@ async function addShoppingItem(
   }
 }
 
-// function processAirtableBatch(
-//   operation: string,
-//   records: any[],
-//   doneCallback: (err: any, records?: AirtableBatchData[]) => void
-// ) {
-//   let recordChunks = [];
-//   for (let i = 0; i < records.length; i += 10) {
-//     recordChunks.push(records.slice(i, i + 10));
-//   }
-
-//   recordChunks.forEach((chunk) => {
-//     switch (operation) {
-//       case "create":
-//         airtable("Shopping").create(chunk, doneCallback);
-//         break;
-//       case "update":
-//         airtable("Shopping").update(chunk, doneCallback);
-//         break;
-//       case "destroy":
-//         airtable("Shopping").destroy(chunk, doneCallback);
-//         break;
-//       default:
-//         console.error("Unsupported operation");
-//     }
-//   });
-// }
-
-// function insertToAirtable(data: {
-//   ingredientsToUpdate?: any[];
-//   ingredientsToAdd?: any[];
-//   ingredientsToRemove?: any[];
-// }) {
-//   if (data.ingredientsToUpdate && data.ingredientsToUpdate.length) {
-//     processAirtableBatch("update", data.ingredientsToUpdate, (err, records) => {
-//       if (err) {
-//         console.error("Update Error:", err);
-//         return;
-//       }
-//       records.forEach((record) => console.log("Updated:", record.getId()));
-//     });
-//   }
-
-//   if (data.ingredientsToAdd && data.ingredientsToAdd.length) {
-//     processAirtableBatch("create", data.ingredientsToAdd, (err, records) => {
-//       if (err) {
-//         console.error("Create Error:", err);
-//         return;
-//       }
-//       records.forEach((record) => console.log("Created:", record.getId()));
-//     });
-//   }
-
-//   if (data.ingredientsToRemove && data.ingredientsToRemove.length) {
-//     processAirtableBatch(
-//       "destroy",
-//       data.ingredientsToRemove,
-//       (err, deletedRecords) => {
-//         if (err) {
-//           console.error("Destroy Error:", err);
-//           return;
-//         }
-//         console.log("Deleted:", deletedRecords.length, "records");
-//       }
-//     );
-//   }
-// }
-
 // Export the function for use in other components
 export { getShoppingRecords, updateShoppingItem, addShoppingItem };
 
-export type {
-  ShoppingItem,
-  UpdateShoppingItem,
-  ShoppingCreate,
-  AirtableRecord,
-  AirtableResponse,
-  ShoppingFields,
-};
+export type { ShoppingItem, UpdateShoppingItem };

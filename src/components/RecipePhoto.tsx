@@ -25,7 +25,6 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
     const fetchUpdatedImages = async () => {
       setLoading(true);
       if (images.length === 0) {
-        console.log("OKAY");
         try {
           await handleRecipeImageUpdate(recipe, recipe.id);
           const updatedRecipe = await getRecipeById(recipe.id);

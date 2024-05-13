@@ -1,6 +1,6 @@
 import { airtable, Airtable, Select } from "./Airtable";
 import { FieldSet, Records, Attachment } from "airtable"; // Assuming FieldSet is available to import
-import { createMarkdownFile } from "../openai/createFile";
+
 // Define an interface for the Airtable record fields for the "Recipes" table
 interface RecipeItem {
   id: string;
@@ -118,14 +118,6 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
       shopping: recipeData.shopping,
     };
 
-    const markdownContent = `# ${recipeData.name}\n\n- Serves: ${
-      recipeData.serves
-    }\n\n## Ingredients\n${recipeData.ingredients}\n\n## Method\n${
-      recipeData.method
-    }\n\n*Recipe created on: ${new Date().toISOString().slice(0, 10)}*`;
-
-    const blob = new Blob([markdownContent], { type: "text/markdown" });
-
     const createdRecords: Records<FieldSet> = await airtable("Recipes").create([
       { fields: airtableData },
     ]);
@@ -144,8 +136,6 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
         shopping: record.fields.shopping as string[],
       };
       console.log(`Created new recipe record ID: ${newRecipe.id}`);
-
-      // createMarkdownFile(newRecipe.id, markdownContent);
 
       return newRecipe;
     } else {

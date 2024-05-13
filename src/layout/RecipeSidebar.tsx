@@ -65,7 +65,7 @@ export const RecipeSidebar = (props: RecipeSidebarProps) => {
               props.onClose();
             }
           }} // Set the selectedRecipeId in context
-          aria-current={recipe.id === selectedRecipe.id ? "page" : undefined} // Highlight the current recipe
+          aria-current={recipe.id === selectedRecipe?.id ? "page" : undefined} // Highlight the current recipe
           _hover={{
             textDecoration: "none",
             bg: mode("gray.100", "gray.700"),

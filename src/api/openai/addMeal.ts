@@ -115,12 +115,16 @@ const runSheet = {
  * Main function to generate a meal plan and update shopping items.
  */
 async function processMealPlan(
-  recipe: RecipeItem,
+  recipe: RecipeItem | null,
   useExistingMealPlan: boolean,
   existingMealPlanId: string | undefined,
   currentShoppingList: ShoppingItem[]
 ) {
   try {
+    if (recipe === null) {
+      throw new Error("Recipe is required to process the meal plan");
+    }
+
     mergeShopping(currentShoppingList, recipe);
 
     if (useExistingMealPlan && existingMealPlanId) {

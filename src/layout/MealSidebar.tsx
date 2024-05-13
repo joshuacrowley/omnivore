@@ -61,7 +61,7 @@ export const MealsSidebar = (props: MealSidebarProps) => {
               props.onClose();
             }
           }} // Set the selectedmealId in context
-          aria-current={meal.id === selectedMealPlan.id ? "page" : undefined} // Highlight the current meal
+          aria-current={meal.id === selectedMealPlan?.id ? "page" : undefined} // Highlight the current meal
           _hover={{
             textDecoration: "none",
             bg: mode("gray.100", "gray.700"),
