@@ -1,3 +1,5 @@
+![Omnivore app](public/Hero.png)
+
 ## About
 
 Omnivore is an ongoing attempt to cram most of Open AI’s APIs into a humble meal planning app that just runs in your browser. I'm using it to learn, and I hope it helps you learn too!
@@ -11,8 +13,8 @@ I hope you have a fun few weekends with it, learning about the APIs and getting 
 ### 1. Clone repo
 
 ```shell
-git clone https://github.com/openai/openai-assistants-quickstart.git
-cd openai-assistants-quickstart
+git clone https://github.com/joshuacrowley/omnivore.git
+cd omnivore
 ```
 
 ### 2. Set your [OpenAI API key](https://platform.openai.com/api-keys)
