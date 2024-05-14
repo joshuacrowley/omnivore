@@ -44,7 +44,7 @@ A good idea while we're still experimenting!
 
 ### 5. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs) to your Airtable account
 
-![Airtable base](./public/airtable-base.png){:width="270px"}
+![Airtable base](./public/airtable-base.png)
 
 ### 6. Create an Airtable [personal access token](https://airtable.com/create/tokens)
 
@@ -63,7 +63,7 @@ npm install
 ### 9. Run
 
 ```shell
-npm run dev
+npm run start
 ```
 
 ### 10. Navigate to [http://localhost:3000](http://localhost:3000).
