@@ -26,6 +26,7 @@ import { useKitchen } from "../KitchenContext"; // Update import path if necessa
 import { AddRecipe } from "../components/AddRecipe";
 import { AddShopping } from "../components/AddShopping";
 import { AddThread } from "../components/AddThread";
+import { AddMeal } from "../components/AddMeal";
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
@@ -147,6 +148,8 @@ export const Layout = () => {
                 {selectedThread ? selectedThread.topic : ""}
               </ColumnHeading>
             )}
+
+            {selectedNav === "Recipes" && <AddMeal />}
 
             {selectedNav !== "Shopping" && (
               <ColumnButton
