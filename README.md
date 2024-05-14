@@ -4,9 +4,9 @@
 
 ## About
 
-Omnivore is an ongoing attempt to build an Omni meal planning app - whatever that may be!
+Omnivore is an ongoing attempt to build an Omni meal planning app - whatever that may be! You can read more about the design behind [here](https://joshuacrowley.com/study/omnivore).
 
-At present the app uses the latest OpenAI `GPT-4o` model, plus shows basic implementations of
+At present this Create react web app uses the latest OpenAI `GPT-4o` model, plus shows basic implementations of
 
 - Assistant api
 - File search (with Vector storage)
@@ -21,7 +21,7 @@ I plan to upgrade the app with examples of how to use `GPT-4o`'s new audio and v
 
 Omnivore should only be run locally off your home computer/network and not deployed remotely, otherwise you'll expose your ENV variables. Omnivore uses [Airtable](https://airtable.com/) as backend to help you get started. You can also access your shopping list, meal and recipes via the [Airtable mobile app](https://apps.apple.com/us/app/airtable/id914172636).
 
-I hope you have a fun few weekends with it, learning about the APIs and getting inspired about designing your own amazing Omni apps. And hopefully get some cooking done too.
+I hope you have a few fun weekends with it, learn about these amazing OpenAI APIs, and get inspired to designing your own amazing Omni apps. And hopefully get some cooking done too.
 
 ## Getting started
 
@@ -40,9 +40,9 @@ Set it as REACT_APP_OPENAI_API_KEY in .env.local.
 
 ### 4. Set a [monthly budget](https://platform.openai.com/settings/organization/limits)
 
-Good idea while we're still experimenting.
+$5 should be more then enough, and a good idea while we're still experimenting.
 
-### 5. Copy this [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs)
+### 5. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs) to your Airtable account
 
 ![Airtable base](./public/airtable-base.png).
 
