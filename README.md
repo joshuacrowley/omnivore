@@ -1,59 +1,52 @@
-This project was bootstrapped with
-[Create React App](https://github.com/facebook/create-react-app).
+## About
 
-## Available Scripts
+Omnivore is an ongoing attempt to cram most of Open AI’s APIs into a humble meal planning app that just runs in your browser. I'm using it to learn, and I hope it helps you learn too!
 
-In the project directory, you can run:
+It’s a toy app, meant to be run locally off your home computer/network and not deployed remotely. Omnivore uses Airtable as backend. I think it’s easy to hack, tweak, so you can understand how these experiences come together. I’ll be very happy if create an experience where you can reflect on your engagement with the app and it’s assistant Chef CK, over a few weekends to understand the strengths and weaknesses when building AI features. We’re gonna make a mess.
 
-### `npm start`
+I hope you have a fun few weekends with it, learning about the APIs and getting inspired about building Omnimodal apps.
 
-Runs the app in the development mode.<br /> Open
-[http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Getting started
 
-The page will reload if you make edits.<br /> You will also see any lint errors
-in the console.
+### 1. Clone repo
 
-### `npm test`
+```shell
+git clone https://github.com/openai/openai-assistants-quickstart.git
+cd openai-assistants-quickstart
+```
 
-Launches the test runner in the interactive watch mode.<br /> See the section
-about
-[running tests](https://facebook.github.io/create-react-app/docs/running-tests)
-for more information.
+### 2. Set your [OpenAI API key](https://platform.openai.com/api-keys)
 
-### `npm run build`
+Copy the .env.example file, and save it as .env.local.
 
-Builds the app for production to the `build` folder.<br /> It correctly bundles
-React in production mode and optimizes the build for the best performance.
+### 3. Install dependencies
 
-The build is minified and the filenames include the hashes.<br /> Your app is
-ready to be deployed!
+```shell
+npm install
+```
 
-See the section about
-[deployment](https://facebook.github.io/create-react-app/docs/deployment) for
-more information.
+### 4. Run
 
-### `npm run eject`
+```shell
+npm run dev
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 5. Navigate to [http://localhost:3000](http://localhost:3000).
 
-If you aren’t satisfied with the build tool and configuration choices, you can
-`eject` at any time. This command will remove the single build dependency from
-your project.
+### 6. Add files to your assistant
 
-Instead, it will copy all the configuration files and the transitive
-dependencies (webpack, Babel, ESLint, etc) right into your project so you have
-full control over them. All of the commands except `eject` will still work, but
-they will point to the copied scripts so you can tweak them. At this point
-you’re on your own.
+```shell
+npm run makeFiles
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for
-small and middle deployments, and you shouldn’t feel obligated to use this
-feature. However we understand that this tool wouldn’t be useful if you couldn’t
-customize it when you are ready for it.
+npm install and npm start
 
-## Learn More
+There's a detail guide on how to setup your .env.local here.
 
-You can learn more in the
-[Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Feedback
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Let us know if you have any thoughts, questions, or feedback in
+
+## Feedback
+
+[Openai assistants quickstart](https://github.com/openai/openai-assistants-quickstart)
