@@ -36,23 +36,23 @@ cd omnivore
 
 ### 3. Create your [OpenAI API key](https://platform.openai.com/api-keys)
 
-Set it as REACT_APP_OPENAI_API_KEY in .env.local.
+Set it as `REACT_APP_OPENAI_API_KEY` in .env.local.
 
 ### 4. Set a [monthly budget](https://platform.openai.com/settings/organization/limits)
 
-$5 should be more then enough, and a good idea while we're still experimenting.
+A good idea while we're still experimenting!
 
 ### 5. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs) to your Airtable account
 
-![Airtable base](./public/airtable-base.png).
+![Airtable base](./public/airtable-base.png){:width="270px"}
 
 ### 6. Create an Airtable [personal access token](https://airtable.com/create/tokens)
 
-Needs access to your copied base and `data.records:read` and `data.records:write`. Set it as REACT_APP_AIRTABLE_API_KEY in .env.local.
+Needs access to your copied base and `data.records:read` and `data.records:write`. Set it as `REACT_APP_AIRTABLE_API_KEY` in .env.local.
 
 ### 7. Copy the Airtable Base ID
 
-You can pluck it from the url when viewing your base https://airtable.com/app.../. Set it as REACT_APP_AIRTABLE_BASE in .env.local.
+You can pluck it from the url when viewing your base https://airtable.com/app.../. Set it as `REACT_APP_AIRTABLE_BASE` in .env.local.
 
 ### 8. Install dependencies
 
