@@ -32,7 +32,7 @@ async function updatedAssistant(assistant_id: string) {
       {
         instructions:
           "You are a helpful assistant that helps recall details about recipes in your collection. You can add recipes to the collection, if asked to do so.",
-        name: "Chef CKJ",
+        name: "Chef Omni",
         tool_resources: {
           file_search: {
             vector_store_ids: [vectorStoreId],
