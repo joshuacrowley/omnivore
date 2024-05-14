@@ -38,6 +38,10 @@ cd omnivore
 
 It will need read and write permissions. Set it as `REACT_APP_OPENAI_API_KEY` in .env.local.
 
+### 3. Create your [assistant ID](https://platform.openai.com/assistants)
+
+Set it as `REACT_APP_ASSISTANT_ID` in .env.local.
+
 ### 4. Set a [monthly budget](https://platform.openai.com/settings/organization/limits)
 
 A good idea while we're still experimenting!
