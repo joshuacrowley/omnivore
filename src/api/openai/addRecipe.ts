@@ -5,7 +5,7 @@ import { KitchenContextType } from "../../KitchenContext";
 // Function to create a prompt to send to the OpenAI API
 async function addRecipe(prompt: string) {
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     response_format: { type: "json_object" },
 
     messages: [

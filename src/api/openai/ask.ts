@@ -6,7 +6,7 @@ async function ask(question: string, questionContext: string) {
   console.log("questionContext", questionContext);
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     messages: [
       {
         role: "system",

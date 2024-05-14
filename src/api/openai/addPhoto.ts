@@ -1,12 +1,11 @@
 import { openai } from "./OpenAi";
 import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
-
 import { KitchenContextType } from "../../KitchenContext";
 
 // Function to create a prompt to send to the OpenAI API
 async function addRecipe(base64Image: string) {
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     response_format: { type: "json_object" },
 
     messages: [
@@ -25,7 +24,7 @@ Remember the fields are name, ingredients, method and serves.
       "method": "1. Mix together dry ingredients with wet ingredients slowly. - Chocolate Chips | 1 Cup | > Usually I add 2 cups...just because. Stir in ~1 cup or more of...",
       "serves": 4}
 
-            name, not Title or Recipe title. It must be name.
+      Name, not Title or Recipe title. It must be name. serves is a number, not a string .e.g 4 not "4"
 
       I can't have dairy, can you substitute for a diary free ingredient instead?
       Can you always use metric measurements.

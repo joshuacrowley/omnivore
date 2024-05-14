@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Image,
@@ -13,40 +13,38 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [images, setImages] = useState<Attachment[]>(recipe.photo || []);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const hasFetchedRef = useRef(false); // useRef to track fetch state without causing re-renders
 
   const handleImageClick = () => {
     if (images.length > 1) {
-      // Cycle through images when clicked
       setCurrentIndex((currentIndex + 1) % images.length);
     }
   };
 
   useEffect(() => {
     const fetchUpdatedImages = async () => {
-      setLoading(true);
-      if (images.length === 0) {
+      if (!hasFetchedRef.current && images.length === 0) {
+        // Check if fetched and if images are empty
+        setLoading(true);
         try {
           await handleRecipeImageUpdate(recipe, recipe.id);
           const updatedRecipe = await getRecipeById(recipe.id);
-          if (updatedRecipe) {
-            // Check if updatedRecipe is not null
-            setImages(updatedRecipe.photo || []);
+          if (updatedRecipe && updatedRecipe.photo) {
+            setImages(updatedRecipe.photo);
           } else {
             console.error("No updated recipe found");
-            // Optionally, handle this scenario by setting a default state or providing user feedback
           }
+          hasFetchedRef.current = true; // Update the ref after fetching
         } catch (error) {
           console.error("Failed to update recipe images:", error);
         } finally {
           setLoading(false);
         }
-      } else {
-        setLoading(false);
       }
     };
 
     fetchUpdatedImages();
-  }, [recipe, images.length]);
+  }, [recipe.id]); // Depend only on recipe.id if it uniquely identifies a recipe
 
   return (
     <Box
@@ -57,15 +55,14 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem }> = ({ recipe }) => {
       alignItems={"center"}
     >
       {loading ? (
-        <Image
-          borderRadius={"125px"}
-          backgroundColor={mode("gray.100", "gray.700")}
-          style={{ filter: "grayscale(100%)" }}
+        <SkeletonCircle
+          size="250px"
+          startColor={mode("gray.100", "gray.700")}
         />
       ) : (
         images.length > 0 && (
           <Image
-            src={images[currentIndex].url || ""} // Display the image at the current index
+            src={images[currentIndex].url || ""}
             alt={`Recipe image ${currentIndex + 1}`}
             onClick={handleImageClick}
             borderRadius={"125px"}

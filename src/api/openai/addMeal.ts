@@ -205,7 +205,7 @@ async function updateRunsheet(recipe: RecipeItem, existingRunSheet: string) {
   )}`;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     response_format: { type: "json_object" },
     messages: [
       {
@@ -236,7 +236,7 @@ async function updateRunsheet(recipe: RecipeItem, existingRunSheet: string) {
 
 async function generateFreshRunsheet(recipe: RecipeItem) {
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     response_format: { type: "json_object" },
     messages: [
       {

@@ -19,7 +19,7 @@ type AirtableShoppingRecord = Record<ShoppingFields>;
 // Function to create a prompt to send to the OpenAI API for generating shopping list items
 async function generateShoppingList(prompt: string) {
   const response = await openai.chat.completions.create({
-    model: "gpt-4-turbo",
+    model: process.env.REACT_APP_OPENAI_MODEL as string,
     response_format: { type: "json_object" },
     messages: [
       {

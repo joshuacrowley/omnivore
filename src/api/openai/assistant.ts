@@ -59,7 +59,7 @@ async function updatedAssistant(assistant_id: string) {
             },
           },
         ],
-        model: "gpt-4-turbo",
+        model: process.env.REACT_APP_OPENAI_MODEL as string,
       }
     );
     console.log("Assistant updated successfully:", myUpdatedAssistant);

@@ -37,15 +37,15 @@ const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
   };
 
   // Add and remove event listeners for keyboard
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
+  // useEffect(() => {
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   document.addEventListener("keyup", handleKeyUp);
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [recording]); // Only re-run if 'recording' changes
+  //   return () => {
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //     document.removeEventListener("keyup", handleKeyUp);
+  //   };
+  // }, [recording]); // Only re-run if 'recording' changes
 
   const handleAskClick = async () => {
     setAsking(true);

@@ -29,15 +29,16 @@ const Listen: React.FC<ListenProps> = ({
   };
 
   // Add and remove event listeners for keyboard
-  useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
-    };
-  }, [recording]); // Only re-run if 'recording' changes
+  // useEffect(() => {
+  //   document.addEventListener("keydown", handleKeyDown);
+  //   document.addEventListener("keyup", handleKeyUp);
+
+  //   return () => {
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //     document.removeEventListener("keyup", handleKeyUp);
+  //   };
+  // }, [recording]); // Only re-run if 'recording' changes
 
   const handleAskClick = async () => {
     startRecording();

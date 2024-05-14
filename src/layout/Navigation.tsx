@@ -35,6 +35,11 @@ interface NavbarProps extends FlexProps {
 export const Navbar = (props: NavbarProps) => {
   const { selectedNav, handleNavSelection } = useKitchen(); // Destructure the necessary state and functions from context
 
+  const Hunger = mode(
+    () => <>🍐</>,
+    () => <>🍖</>
+  );
+
   return (
     <Flex
       as="nav"
@@ -53,7 +58,7 @@ export const Navbar = (props: NavbarProps) => {
               display={{ base: "inline-flex", lg: "none" }}
             />
             <Text fontWeight="bold" fontSize="sm" lineHeight="1.25rem">
-              Cookbook Kitchen
+              <Hunger /> Omnivore
             </Text>
           </HStack>
         </ColumnHeader>
@@ -83,19 +88,17 @@ export const Navbar = (props: NavbarProps) => {
             </NavLink>
 
             <NavLink
-                onClick={() => handleNavSelection("Chat")}
-                aria-current={selectedNav === "Chat" ? "page" : false}
-                icon={FiMessageCircle}
-              >
-                Chat 
-              </NavLink>
+              onClick={() => handleNavSelection("Chat")}
+              aria-current={selectedNav === "Chat" ? "page" : false}
+              icon={FiMessageCircle}
+            >
+              Chat
+            </NavLink>
           </Stack>
 
           <Stack spacing="3">
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
-
-
               <NavLink icon={FiGithub} isExternal>
                 GitHub
               </NavLink>
@@ -109,12 +112,12 @@ export const Navbar = (props: NavbarProps) => {
                   Airtable
                 </Link>
               </NavLink>
-
-              <ColorModeSwitcher />
             </Stack>
           </Stack>
         </Stack>
       </Stack>
+
+      <ColorModeSwitcher />
     </Flex>
   );
 };
