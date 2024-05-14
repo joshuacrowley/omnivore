@@ -34,19 +34,19 @@ cd omnivore
 
 ### 2. Copy the .env.example file, and save it as .env.local.
 
-### 3. Create your [OpenAI API key](https://platform.openai.com/api-keys){:target="\_blank"}
+### 3. Create your [OpenAI API key](https://platform.openai.com/api-keys)
 
 It will need read and write permissions. Set it as `REACT_APP_OPENAI_API_KEY` in .env.local.
 
-### 4. Set a [monthly budget](https://platform.openai.com/settings/organization/limits){:target="\_blank"}
+### 4. Set a [monthly budget](https://platform.openai.com/settings/organization/limits)
 
 A good idea while we're still experimenting!
 
-### 5. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs){:target="\_blank"} to your Airtable account
+### 5. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs) to your Airtable account
 
-![Airtable base](./public/airtable-base.png){:width="270px"}.
+![Airtable base](./public/airtable-base.png){:width="270px"}
 
-### 6. Create an Airtable [personal access token](https://airtable.com/create/tokens){:target="\_blank"}
+### 6. Create an Airtable [personal access token](https://airtable.com/create/tokens)
 
 Needs access to your copied base and `data.records:read` and `data.records:write`. Set it as `REACT_APP_AIRTABLE_API_KEY` in .env.local.
 
@@ -66,7 +66,7 @@ npm install
 npm run dev
 ```
 
-### 10. Navigate to [http://localhost:3000](http://localhost:3000){:target="\_blank"}.
+### 10. Navigate to [http://localhost:3000](http://localhost:3000).
 
 ### 11. Once you've added some recipes, you can create files to upload to your assistant.
 
