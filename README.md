@@ -19,7 +19,7 @@ At present the app uses the latest OpenAI `GPT-4o` model, plus shows basic imple
 
 I plan to upgrade the app with examples of how to use `GPT-4o`'s new audio and video capabilities in the near future.
 
-Omnivore is a toy app, meant to be run locally off your home computer/network and not deployed remotely. Omnivore uses Airtable as backend to help you get started easily, and I've found it's easy to tweak as you go. You can also access your shopping list, meal and recipes via the Airtable mobile app.
+Omnivore should only be run locally off your home computer/network and not deployed remotely, otherwise you'll expose your ENV variables. Omnivore uses [Airtable](https://airtable.com/) as backend to help you get started. You can also access your shopping list, meal and recipes via the [Airtable mobile app](https://apps.apple.com/us/app/airtable/id914172636).
 
 I hope you have a fun few weekends with it, learning about the APIs and getting inspired about designing your own amazing Omni apps. And hopefully get some cooking done too.
 
