@@ -23,7 +23,10 @@ import {
   FiCalendar,
   FiMessageCircle,
   FiX,
+  FiBook,
+  FiCode,
 } from "react-icons/fi";
+
 import { ColumnHeader, ColumnIconButton } from "./Column";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
 import { useKitchen } from "../KitchenContext"; // Update import path if necessary
@@ -100,7 +103,22 @@ export const Navbar = (props: NavbarProps) => {
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
               <NavLink icon={FiGithub} isExternal>
-                GitHub
+                <Link
+                  href={`https://github.com/joshuacrowley/omnivore`}
+                  target={"_top"}
+                  isExternal
+                >
+                  GitHub
+                </Link>
+              </NavLink>
+              <NavLink icon={FiCode} isExternal>
+                <Link
+                  href={`https://platform.openai.com/docs/introduction`}
+                  target={"_top"}
+                  isExternal
+                >
+                  OpenAI Docs
+                </Link>
               </NavLink>
 
               <NavLink icon={FiDatabase} isExternal>
@@ -112,11 +130,19 @@ export const Navbar = (props: NavbarProps) => {
                   Airtable
                 </Link>
               </NavLink>
+              <NavLink icon={FiBook} isExternal>
+                <Link
+                  href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}/api/docs`}
+                  target={"_top"}
+                  isExternal
+                >
+                  Airtable API
+                </Link>
+              </NavLink>
             </Stack>
           </Stack>
         </Stack>
       </Stack>
-
       <ColorModeSwitcher />
     </Flex>
   );
