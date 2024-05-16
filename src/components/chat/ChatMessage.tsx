@@ -59,7 +59,7 @@ export const ChatMessage = ({ role, text }: MessageProps) => {
     <HStack align="flex-start" gap="5" width="full">
       <Box width="full">
         <HStack align={align} gap="5" width="full" my={2}>
-          <Text as="b">{role === "user" ? "You" : "CK"}</Text>
+          <Text as="b">{role === "user" ? "You" : "🍐 Omni"}</Text>
         </HStack>
         <Box
           bg={bgColor}
