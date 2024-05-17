@@ -26,6 +26,7 @@ import SpeakButton from "../components/Speak";
 import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
+import VideoFeedComponent from "../components/VideoFeed";
 import { ChatWrapper } from "../components/chat/ChatWrapper";
 
 const markdownOptions = {
@@ -86,7 +87,7 @@ export const Main = (props: BoxProps) => {
 
   return (
     <Box as="main" {...props}>
-      {["Recipes", "Shopping"].includes(selectedNav) ? (
+      {["Recipes"].includes(selectedNav) ? (
         <>
           <Stack spacing="8">
             <Stack spacing="3">
@@ -122,6 +123,8 @@ export const Main = (props: BoxProps) => {
       ) : (
         false
       )}
+
+      {selectedNav === "Shopping" ? <VideoFeedComponent /> : false}
 
       {selectedNav === "Meal plan" ? (
         <>

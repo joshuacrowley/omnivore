@@ -72,28 +72,33 @@ async function updateShoppingItem(
   updateData: UpdateShoppingItem
 ): Promise<ShoppingItem> {
   try {
+    console.log(`Updating record with ID: ${updateData.id}`);
     const updatedRecord = await airtable("Shopping").update([
       {
         id: updateData.id,
         fields: updateData.fields,
       },
     ]);
-    const updatedItem: ShoppingItem = {
-      id: updatedRecord[0].id,
-      item: updatedRecord[0].fields.item as string,
-      quantity: updatedRecord[0].fields.quantity as string,
-      category: updatedRecord[0].fields.category as string,
-      bought: updatedRecord[0].fields.bought as boolean,
-      recipeIds: updatedRecord[0].fields.recipeIds as string[],
-    };
-    console.log(`Updated record ID: ${updatedItem.id}`);
-    return updatedItem;
+
+    if (updatedRecord && updatedRecord.length > 0) {
+      const updatedItem: ShoppingItem = {
+        id: updatedRecord[0].id,
+        item: updatedRecord[0].fields.item as string,
+        quantity: updatedRecord[0].fields.quantity as string,
+        category: updatedRecord[0].fields.category as string,
+        bought: updatedRecord[0].fields.bought as boolean,
+        recipeIds: updatedRecord[0].fields.recipeIds as string[],
+      };
+      console.log(`Updated record ID: ${updatedItem.id}`);
+      return updatedItem;
+    } else {
+      throw new Error("No records updated");
+    }
   } catch (error) {
     console.error("Failed to update the record:", error);
     throw error;
   }
 }
-
 /**
  * Adds a new shopping item record in the "Shopping" table.
  * @param {CreateShoppingItem} shoppingData The data for the new shopping item to be created.

@@ -43,6 +43,7 @@ interface KitchenContextType {
   handleNavSelection: (
     navItem: "Recipes" | "Shopping" | "Meal plan" | "Chat"
   ) => void;
+  handleBoughtChange: (item: ShoppingItem, bought: boolean) => Promise<void>;
   updateShoppingListItem: (updateData: UpdateShoppingItem) => Promise<void>;
   shortCutActive: boolean;
   setShortCutActive: (active: boolean) => void;
@@ -182,6 +183,27 @@ export const RecipeProvider: FunctionComponent<{
     setLoading(false);
   }, []);
 
+  const handleBoughtChange = (item: ShoppingItem, bought: boolean) => {
+    // Optimistically update the UI
+    const newShoppingList = shoppingList.map((shoppingItem: ShoppingItem) => {
+      if (shoppingItem.id === item.id) {
+        return { ...shoppingItem, bought: bought };
+      }
+      return shoppingItem;
+    });
+    // Update the context state immediately without waiting for airtable
+    setShoppingList(newShoppingList);
+
+    // Asynchronously update the backend
+    updateShoppingListItem({ id: item.id, fields: { bought } }).catch(
+      (error: any) => {
+        console.error("Failed to update item:", error);
+        // Optionally revert the change in the UI or show an error message
+        setShoppingList(shoppingList); // Revert to original state in case of an error
+      }
+    );
+  };
+
   const handleNavSelection = useCallback(
     (navItem: "Recipes" | "Shopping" | "Meal plan" | "Chat") => {
       setSelectedNav(navItem);
@@ -246,6 +268,7 @@ export const RecipeProvider: FunctionComponent<{
     updateShoppingListItem,
     shortCutActive,
     setShortCutActive,
+    handleBoughtChange,
   };
 
   return (
