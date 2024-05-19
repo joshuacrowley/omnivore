@@ -1,6 +1,19 @@
 import { openai } from "../openai/OpenAi";
 import { ShoppingItem } from "../airtable/Shopping";
 
+/**
+ * Filters out items that are marked as bought and returns an array
+ * of objects containing only the id and item properties to reduce tokens.
+ *
+ * @param {Array} items - The array of item objects to be filtered and transformed.
+ * @returns {Array} - An array of objects with id and item properties.
+ */
+function filterItems(items: ShoppingItem[]) {
+  return items
+    .filter((item) => !item.bought)
+    .map(({ id, item }) => ({ id, item }));
+}
+
 const analyseImage = async (
   base64Image: string,
   shoppingList: ShoppingItem[]
@@ -20,7 +33,7 @@ const analyseImage = async (
     {
       role: "system",
       content: `You are a helpful assistant, ticking grocery items off a shopping list as you see them. Here's the current shopping list: ${JSON.stringify(
-        shoppingList
+        filterItems(shoppingList)
       )}. As you detect each item, tick them off the shopping list, but only do it once.`,
     },
     {
@@ -79,6 +92,9 @@ const analyseImage = async (
 
   console.log("Received response from OpenAI API");
   const responseMessage = response.choices[0].message;
+  const total_tokens = response.usage?.total_tokens;
+
+  console.log(`Total tokens: ${total_tokens}`);
   const toolCalls = responseMessage.tool_calls;
 
   if (toolCalls) {
@@ -104,6 +120,8 @@ const analyseImage = async (
         console.error(`Function ${functionName} is not a valid function`);
       }
     }
+  } else {
+    console.log(`Nothing detected.`);
   }
   return null;
 };

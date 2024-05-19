@@ -183,7 +183,10 @@ export const RecipeProvider: FunctionComponent<{
     setLoading(false);
   }, []);
 
-  const handleBoughtChange = (item: ShoppingItem, bought: boolean) => {
+  const handleBoughtChange = async (
+    item: ShoppingItem,
+    bought: boolean
+  ): Promise<void> => {
     // Optimistically update the UI
     const newShoppingList = shoppingList.map((shoppingItem: ShoppingItem) => {
       if (shoppingItem.id === item.id) {
@@ -195,7 +198,7 @@ export const RecipeProvider: FunctionComponent<{
     setShoppingList(newShoppingList);
 
     // Asynchronously update the backend
-    updateShoppingListItem({ id: item.id, fields: { bought } }).catch(
+    await updateShoppingListItem({ id: item.id, fields: { bought } }).catch(
       (error: any) => {
         console.error("Failed to update item:", error);
         // Optionally revert the change in the UI or show an error message

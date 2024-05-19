@@ -12,7 +12,7 @@ import {
 import { useKitchen } from "../KitchenContext";
 import { analyseImage } from "../api/openai/analyseImage";
 
-const VideoFeedComponent: React.FC = () => {
+const VideoFeedComponent = () => {
   const { shoppingList, handleBoughtChange, loading, error } = useKitchen();
 
   const webcamRef = useRef<Webcam>(null);
@@ -21,7 +21,6 @@ const VideoFeedComponent: React.FC = () => {
   const [detectedItem, setDetectedItem] = useState<string | null>(null);
   const { isOpen, onToggle } = useDisclosure();
 
-  //@ts-ignore
   const resizeImage = (
     base64Str: string,
     width: number,
@@ -82,14 +81,7 @@ const VideoFeedComponent: React.FC = () => {
     if (!isSampling) return;
 
     const interval = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = prev + 10;
-        if (newProgress >= 100) {
-          capture();
-          return 0;
-        }
-        return newProgress;
-      });
+      //    capture();
     }, 1000); // Sample every 3 seconds
 
     return () => clearInterval(interval);
@@ -110,26 +102,20 @@ const VideoFeedComponent: React.FC = () => {
         }}
       />
       <CircularProgress value={progress} color="orange.400" thickness="12px">
-        <CircularProgressLabel>{progress}%</CircularProgressLabel>
+        {/* <CircularProgressLabel>{progress}%</CircularProgressLabel> */}
       </CircularProgress>
       {detectedItem && (
         <SlideFade in={isOpen} offsetY="20px">
-          <Box
-            p="40px"
-            color="white"
-            mt="4"
-            bg="teal.500"
-            rounded="md"
-            shadow="md"
-          >
+          <Box p="40px" mt="4" rounded="md" shadow="md">
             {detectedItem}
           </Box>
         </SlideFade>
       )}
       <Flex mt={4}>
-        <Button colorScheme="teal" onClick={startSampling} mr={2}>
+        <Button onClick={capture} mr={2}>
           Start
         </Button>
+
         <Button colorScheme="red" onClick={stopSampling}>
           Stop
         </Button>
