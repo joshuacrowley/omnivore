@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Webcam from "react-webcam";
 import {
   CircularProgress,
-  CircularProgressLabel,
   SlideFade,
   Box,
   Button,
@@ -11,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useKitchen } from "../KitchenContext";
 import { analyseImage } from "../api/openai/analyseImage";
+import { FiCamera } from "react-icons/fi";
 
 const VideoFeedComponent = () => {
   const { shoppingList, handleBoughtChange, loading, error } = useKitchen();
@@ -18,7 +18,7 @@ const VideoFeedComponent = () => {
   const webcamRef = useRef<Webcam>(null);
   const [progress, setProgress] = useState(0);
   const [isSampling, setIsSampling] = useState(false);
-  const [detectedItem, setDetectedItem] = useState<string | null>(null);
+  const [detectedItems, setDetectedItems] = useState<string[]>([]);
   const { isOpen, onToggle } = useDisclosure();
 
   const resizeImage = (
@@ -60,64 +60,59 @@ const VideoFeedComponent = () => {
         const base64Image = resizedImage.split(",")[1];
         console.log("Sending image to analyze");
 
-        analyseImage(base64Image, shoppingList).then((item) => {
-          if (item) {
-            const detectedShoppingItem = shoppingList.find(
-              (shoppingItem) => shoppingItem.id === item
-            );
-            if (detectedShoppingItem) {
-              //@ts-ignore
-              setDetectedItem(detectedShoppingItem.item);
-              handleBoughtChange(detectedShoppingItem, true);
+        analyseImage(base64Image, shoppingList).then((items) => {
+          if (items) {
+            const detectedShoppingItems = items
+              .map(
+                (item) =>
+                  shoppingList.find((shoppingItem) => shoppingItem.id === item)
+                    ?.item
+              )
+              .filter(Boolean) as string[];
+
+            if (detectedShoppingItems.length > 0) {
+              setDetectedItems(detectedShoppingItems);
+              detectedShoppingItems.forEach((item) => {
+                const shoppingItem = shoppingList.find(
+                  (shoppingItem) => shoppingItem.item === item
+                );
+                if (shoppingItem) {
+                  handleBoughtChange(shoppingItem, true);
+                }
+              });
               onToggle();
             }
           }
         });
       });
     }
-  }, [onToggle, shoppingList]);
-
-  useEffect(() => {
-    if (!isSampling) return;
-
-    const interval = setInterval(() => {
-      //    capture();
-    }, 1000); // Sample every 3 seconds
-
-    return () => clearInterval(interval);
-  }, [isSampling, capture]);
+  }, [onToggle, shoppingList, handleBoughtChange]);
 
   return (
     <Box>
       <Webcam
         audio={false}
-        height={512}
+        height={150}
         ref={webcamRef}
         screenshotFormat="image/png"
-        width={512}
+        width={150}
         videoConstraints={{
           width: 512,
           height: 512,
           facingMode: "user",
         }}
       />
-      <CircularProgress value={progress} color="orange.400" thickness="12px">
-        {/* <CircularProgressLabel>{progress}%</CircularProgressLabel> */}
-      </CircularProgress>
-      {detectedItem && (
+
+      {detectedItems.length > 0 && (
         <SlideFade in={isOpen} offsetY="20px">
           <Box p="40px" mt="4" rounded="md" shadow="md">
-            {detectedItem}
+            {detectedItems.join(", ")}
           </Box>
         </SlideFade>
       )}
       <Flex mt={4}>
-        <Button onClick={capture} mr={2}>
-          Start
-        </Button>
-
-        <Button colorScheme="red" onClick={stopSampling}>
-          Stop
+        <Button rightIcon={<FiCamera />} onClick={capture} mr={2}>
+          Scan
         </Button>
       </Flex>
     </Box>

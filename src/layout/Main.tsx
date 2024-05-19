@@ -20,13 +20,17 @@ import {
   Tr,
   Th,
   Td,
+  List,
+  ListItem,
+  ListIcon,
+  OrderedList,
+  UnorderedList,
 } from "@chakra-ui/react";
 import { useKitchen } from "../KitchenContext";
 import SpeakButton from "../components/Speak";
 import Ask from "../components/Ask";
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
-import VideoFeedComponent from "../components/VideoFeed";
 import { ChatWrapper } from "../components/chat/ChatWrapper";
 
 const markdownOptions = {
@@ -37,8 +41,30 @@ const markdownOptions = {
     p: { component: Text, props: { mb: 4 } },
     a: { component: Link, props: { color: "teal.500", isExternal: true } },
     code: { component: Code, props: { p: 2, borderRadius: "md" } },
-    ul: { component: Box, props: { as: "ul", pl: 5, mt: 2, mb: 4 } },
-    li: { component: Box, props: { as: "li", mb: 1 } },
+    ul: {
+      component: UnorderedList,
+      props: {
+        as: "ul",
+        pl: 5,
+        mt: 2,
+        mb: 4,
+        styleType: "disc",
+        stylePosition: "inside",
+      },
+    },
+    ol: {
+      component: OrderedList,
+      props: {
+        as: "ol",
+        pl: 5,
+        mt: 2,
+        mb: 4,
+        styleType: "decimal",
+        stylePosition: "inside",
+      },
+    },
+
+    li: { component: ListItem, props: { mb: 1 } },
     table: { component: Table, props: { variant: "simple", size: "sm" } },
     thead: { component: Thead },
     tbody: { component: Tbody },
@@ -87,7 +113,7 @@ export const Main = (props: BoxProps) => {
 
   return (
     <Box as="main" {...props}>
-      {["Recipes"].includes(selectedNav) ? (
+      {["Recipes", "Shopping"].includes(selectedNav) ? (
         <>
           <Stack spacing="8">
             <Stack spacing="3">
@@ -124,7 +150,7 @@ export const Main = (props: BoxProps) => {
         false
       )}
 
-      {selectedNav === "Shopping" ? <VideoFeedComponent /> : false}
+      {/* {selectedNav === "Shopping" ? <VideoFeedComponent /> : false} */}
 
       {selectedNav === "Meal plan" ? (
         <>

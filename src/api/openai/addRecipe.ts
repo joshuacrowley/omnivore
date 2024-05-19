@@ -1,5 +1,6 @@
 import { openai } from "./OpenAi";
 import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
+import { createLog } from "../airtable/Log";
 import { KitchenContextType } from "../../KitchenContext";
 
 // Function to create a prompt to send to the OpenAI API
@@ -24,10 +25,6 @@ async function addRecipe(prompt: string) {
       "method": "Mix together dry ingredients with wet ingredients slowly. - Chocolate Chips | 1 Cup | > Usually I add 2 cups...just because. Stir in ~1 cup or more of...",
       "serves": 4}
 
-      Or by the way I can't have dairy, can you substitute?
-      
-      Can convert to metric 
-
       name, not Title or Recipe title. It must be name.
                 `,
       },
@@ -36,6 +33,16 @@ async function addRecipe(prompt: string) {
 
   console.log(response.choices[0]);
 
+  const { completion_tokens, prompt_tokens, total_tokens } =
+    response.usage || {};
+
+  createLog({
+    action: "addRecipe",
+    messages: response.choices[0].message.content || undefined,
+    total_tokens: total_tokens || 0,
+    prompt_tokens: prompt_tokens || 0,
+    completion_tokens: completion_tokens || 0,
+  });
   return response.choices[0];
 }
 

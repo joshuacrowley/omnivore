@@ -17,22 +17,24 @@ import {
   Switch,
   FormControl,
   FormLabel,
+  Button,
   Flex,
 } from "@chakra-ui/react";
 
 import { ShoppingItem } from "../api/airtable/Shopping";
 import { useKitchen } from "../KitchenContext";
+import VideoFeedComponent from "../components/VideoFeed";
 
 export const ShoppingSideBar = (props: StackProps) => {
   const {
     shoppingList,
     updateShoppingListItem,
-
     setShoppingList,
     loading,
     error,
   } = useKitchen();
   const [showBought, setShowBought] = useState(true);
+  const [showScan, setShowScan] = useState(false);
 
   const handleBoughtChange = (item: ShoppingItem, bought: boolean) => {
     // Optimistically update the UI
@@ -107,15 +109,11 @@ export const ShoppingSideBar = (props: StackProps) => {
       {...props}
     >
       <Flex justifyContent={"space-between"}>
-        <CircularProgress value={progressPercent}>
-          <CircularProgressLabel>
-            {Math.round(progressPercent)}%
-          </CircularProgressLabel>
-        </CircularProgress>
-
         <FormControl display="flex" alignItems="center" width={"auto"}>
           <FormLabel htmlFor="show-bought" mb="0">
-            Show bought
+            <Text fontSize="sm" my="4">
+              Bought
+            </Text>
           </FormLabel>
           <Switch
             id="show-bought"
@@ -124,7 +122,6 @@ export const ShoppingSideBar = (props: StackProps) => {
           />
         </FormControl>
       </Flex>
-
       {(Object.entries(groupedItems) as [string, ShoppingItem[]][]).map(
         ([category, items]: [string, ShoppingItem[]], index: number) => (
           <React.Fragment key={category}>
@@ -145,6 +142,10 @@ export const ShoppingSideBar = (props: StackProps) => {
           </React.Fragment>
         )
       )}
+      {showScan && <VideoFeedComponent />}
+      <Button size={"sm"} onClick={() => setShowScan(!showScan)}>
+        {showScan ? "Hide" : "Show"} scan
+      </Button>
     </Stack>
   );
 };

@@ -1,5 +1,6 @@
 import { openai } from "../openai/OpenAi";
 import { ShoppingItem } from "../airtable/Shopping";
+import { createLog } from "../airtable/Log";
 
 /**
  * Filters out items that are marked as bought and returns an array
@@ -17,7 +18,7 @@ function filterItems(items: ShoppingItem[]) {
 const analyseImage = async (
   base64Image: string,
   shoppingList: ShoppingItem[]
-): Promise<string | null> => {
+): Promise<string[] | null> => {
   console.log("Sending image to OpenAI API");
 
   const messages: {
@@ -60,12 +61,13 @@ const analyseImage = async (
         parameters: {
           type: "object",
           properties: {
-            item: {
-              type: "string",
-              description: "The id of the grocery item detected in the image",
+            items: {
+              type: "array",
+              items: { type: "string" },
+              description: "The ids of the grocery items detected in the image",
             },
           },
-          required: ["item"],
+          required: ["items"],
         },
       },
     },
@@ -73,13 +75,16 @@ const analyseImage = async (
 
   const detectedItems = new Set<string>();
 
-  const tickOffShoppingList = (item: string): string | null => {
-    const shoppingItem = shoppingList.find((i) => i.id === item);
-    if (shoppingItem && !detectedItems.has(shoppingItem.id)) {
-      detectedItems.add(shoppingItem.id);
-      return shoppingItem.id;
-    }
-    return null;
+  const tickOffShoppingList = (items: string[]): string[] | null => {
+    const detectedIds: string[] = [];
+    items.forEach((item) => {
+      const shoppingItem = shoppingList.find((i) => i.id === item);
+      if (shoppingItem && !detectedItems.has(shoppingItem.id)) {
+        detectedItems.add(shoppingItem.id);
+        detectedIds.push(shoppingItem.id);
+      }
+    });
+    return detectedIds.length > 0 ? detectedIds : null;
   };
 
   //@ts-ignore
@@ -92,14 +97,25 @@ const analyseImage = async (
 
   console.log("Received response from OpenAI API");
   const responseMessage = response.choices[0].message;
-  const total_tokens = response.usage?.total_tokens;
 
-  console.log(`Total tokens: ${total_tokens}`);
+  const { completion_tokens, prompt_tokens, total_tokens } =
+    response.usage || {};
+
+  console.log(`scanShopping Total tokens: ${total_tokens}`);
+
+  createLog({
+    action: "scanShopping",
+    messages: response.choices[0].message.content || undefined,
+    total_tokens: total_tokens || 0,
+    prompt_tokens: prompt_tokens || 0,
+    completion_tokens: completion_tokens || 0,
+  });
+
   const toolCalls = responseMessage.tool_calls;
 
   if (toolCalls) {
     const availableFunctions: {
-      [key: string]: (item: string) => string | null;
+      [key: string]: (items: string[]) => string[] | null;
     } = {
       tickOffShoppingList: tickOffShoppingList,
     };
@@ -110,10 +126,12 @@ const analyseImage = async (
 
       if (typeof functionToCall === "function") {
         const functionArgs = JSON.parse(toolCall.function.arguments);
-        const functionResponse = functionToCall(functionArgs.item);
+        const functionResponse = functionToCall(functionArgs.items);
 
-        if (functionResponse) {
-          console.log(`Detected and ticked off item ID: ${functionResponse}`);
+        if (functionResponse && functionResponse.length > 0) {
+          console.log(
+            `Detected and ticked off item IDs: ${functionResponse.join(", ")}`
+          );
           return functionResponse;
         }
       } else {
