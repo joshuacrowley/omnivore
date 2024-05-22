@@ -98,17 +98,10 @@ const analyseImage = async (
   console.log("Received response from OpenAI API");
   const responseMessage = response.choices[0].message;
 
-  const { completion_tokens, prompt_tokens, total_tokens } =
-    response.usage || {};
-
-  console.log(`scanShopping Total tokens: ${total_tokens}`);
-
   createLog({
-    action: "scanShopping",
-    messages: response.choices[0].message.content || undefined,
-    total_tokens: total_tokens || 0,
-    prompt_tokens: prompt_tokens || 0,
-    completion_tokens: completion_tokens || 0,
+    action: "analyseImage",
+    response: response,
+    modelType: "text",
   });
 
   const toolCalls = responseMessage.tool_calls;

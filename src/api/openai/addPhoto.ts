@@ -1,6 +1,7 @@
 import { openai } from "./OpenAi";
 import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
 import { KitchenContextType } from "../../KitchenContext";
+import { createLog } from "../airtable/Log";
 
 // Function to create a prompt to send to the OpenAI API
 async function addRecipe(base64Image: string) {
@@ -51,6 +52,12 @@ Remember the fields are name, ingredients, method and serves.
   });
 
   console.log(response.choices[0]);
+
+  createLog({
+    action: "addRecipeViaPhoto",
+    response: response,
+    modelType: "text",
+  });
 
   return response.choices[0];
 }

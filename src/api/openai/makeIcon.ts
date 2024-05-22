@@ -1,5 +1,6 @@
 import { openai } from "./OpenAi";
 import { updateRecipes, RecipeItem } from "../airtable/Recipe";
+import { createLog } from "../airtable/Log";
 
 // Function to generate images based on the key ingredient of a recipe
 async function generateImagesForKeyIngredient(
@@ -14,8 +15,11 @@ async function generateImagesForKeyIngredient(
       prompt: prompt,
       n: 1,
       size: "1024x1024",
-      quality: "hd",
+      quality: "standard",
+      style: "natural",
     });
+
+    createLog({ action: "createIcon", modelType: "image" });
 
     if (response.data[0].url) {
       console.log("photo url", response.data[0].url);

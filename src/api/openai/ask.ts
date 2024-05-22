@@ -1,4 +1,5 @@
 import { openai } from "./OpenAi";
+import { createLog } from "../airtable/Log";
 
 async function ask(question: string, questionContext: string) {
   console.log("question", question);
@@ -18,6 +19,12 @@ async function ask(question: string, questionContext: string) {
         content: question,
       },
     ],
+  });
+
+  createLog({
+    action: "askQuestion",
+    response: response,
+    modelType: "text",
   });
 
   console.log("answer:", response.choices[0].message.content);

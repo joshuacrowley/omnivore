@@ -9,6 +9,7 @@ import {
 
 import { mergeShopping } from "./mergeShopping";
 import { ShoppingItem } from "../airtable/Shopping";
+import { createLog } from "../airtable/Log";
 
 const shortRunSheet = {
   id: "recNN9OomyFTvYbap",
@@ -231,6 +232,12 @@ async function updateRunsheet(recipe: RecipeItem, existingRunSheet: string) {
     ],
   });
 
+  createLog({
+    action: "updateRunSheet",
+    response: response,
+    modelType: "text",
+  });
+
   return response.choices[0].message; // Assuming the structure contains a 'message' with 'content'
 }
 
@@ -257,6 +264,12 @@ Please note this example shows the outputs from how two recipes, Creamy Tomato S
         )}`,
       },
     ],
+  });
+
+  createLog({
+    action: "newRunSheet",
+    response: response,
+    modelType: "text",
   });
 
   return response.choices[0].message; // Assuming the structure contains a 'message' with 'content'
