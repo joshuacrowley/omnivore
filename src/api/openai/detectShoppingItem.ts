@@ -1,4 +1,4 @@
-import { openai } from "../openai/OpenAi";
+import { openai } from "./OpenAi";
 import { ShoppingItem } from "../airtable/Shopping";
 import { createLog } from "../airtable/Log";
 
@@ -15,7 +15,7 @@ function filterItems(items: ShoppingItem[]) {
     .map(({ id, item }) => ({ id, item }));
 }
 
-const analyseImage = async (
+const detectShoppingItem = async (
   base64Image: string,
   shoppingList: ShoppingItem[]
 ): Promise<string[] | null> => {
@@ -99,7 +99,7 @@ const analyseImage = async (
   const responseMessage = response.choices[0].message;
 
   createLog({
-    action: "analyseImage",
+    action: "detectShoppingItem",
     response: response,
     modelType: "text",
   });
@@ -137,4 +137,4 @@ const analyseImage = async (
   return null;
 };
 
-export { analyseImage };
+export { detectShoppingItem };

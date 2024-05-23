@@ -9,10 +9,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useKitchen } from "../KitchenContext";
-import { analyseImage } from "../api/openai/analyseImage";
+import { detectShoppingItem } from "../api/openai/detectShoppingItem";
 import { FiCamera } from "react-icons/fi";
 
-const VideoFeedComponent = () => {
+const ShoppingItemScan = () => {
   const { shoppingList, handleBoughtChange, loading, error } = useKitchen();
 
   const webcamRef = useRef<Webcam>(null);
@@ -60,7 +60,7 @@ const VideoFeedComponent = () => {
         const base64Image = resizedImage.split(",")[1];
         console.log("Sending image to analyze");
 
-        analyseImage(base64Image, shoppingList).then((items) => {
+        detectShoppingItem(base64Image, shoppingList).then((items) => {
           if (items) {
             const detectedShoppingItems = items
               .map(
@@ -119,4 +119,4 @@ const VideoFeedComponent = () => {
   );
 };
 
-export default VideoFeedComponent;
+export default ShoppingItemScan;

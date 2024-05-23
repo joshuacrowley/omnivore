@@ -3,16 +3,8 @@ import { useKitchen } from "../KitchenContext";
 import { processMealPlan } from "../api/openai/addMeal";
 import { MealItem } from "../api/airtable/Meal";
 import { FiPlus } from "react-icons/fi";
-
 import {
   Button,
-  Drawer,
-  DrawerHeader,
-  DrawerCloseButton,
-  DrawerBody,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerFooter,
   FormLabel,
   Select,
   Box,
@@ -21,9 +13,15 @@ import {
   FormControl,
   useDisclosure,
   useToast,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
 } from "@chakra-ui/react";
-
-import { ColumnButton } from "../layout/Column";
 
 export const AddMeal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,7 +57,7 @@ export const AddMeal = () => {
 
       await fetchMeals();
       handleNavSelection("Meal plan");
-      onClose(); // Close the drawer on success
+      onClose(); // Close the popover on success
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
@@ -77,26 +75,32 @@ export const AddMeal = () => {
 
   return (
     <>
-      <ColumnButton leftIcon={<FiPlus />} onClick={onOpen}>
-        Add to Meal plan
-      </ColumnButton>
-      <Drawer
+      <Popover
         isOpen={isOpen}
-        placement="right"
         onClose={onClose}
+        placement="right"
+        closeOnBlur={false}
         initialFocusRef={firstField}
-        size="md"
       >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Add to Meal plan</DrawerHeader>
+        <PopoverTrigger>
+          <Button
+            size={{ base: "sm", lg: "md" }}
+            variant={"outline"}
+            rightIcon={<FiPlus />}
+            onClick={onOpen}
+          >
+            Meal plan
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverCloseButton />
 
-          <DrawerBody>
+          <PopoverBody>
             <Stack spacing="24px">
               <FormControl display="flex" alignItems="center">
                 <FormLabel htmlFor="use-existing" mb="0">
-                  Use Existing Meal Plan?
+                  Add to existing Meal Plan?
                 </FormLabel>
                 <Switch
                   id="use-existing"
@@ -124,18 +128,23 @@ export const AddMeal = () => {
                 </Box>
               )}
             </Stack>
-          </DrawerBody>
-
-          <DrawerFooter borderTopWidth="1px">
+          </PopoverBody>
+          <PopoverFooter
+            borderTopWidth="1px"
+            display="flex"
+            justifyContent="flex-end"
+          >
             <Button variant="outline" mr={3} onClick={onClose}>
               Cancel
             </Button>
             <Button isLoading={loading} onClick={handleSubmit}>
               Submit
             </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+          </PopoverFooter>
+        </PopoverContent>
+      </Popover>
     </>
   );
 };
+
+export default AddMeal;

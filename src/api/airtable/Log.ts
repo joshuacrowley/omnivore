@@ -26,7 +26,7 @@ function calculateCost(logData: CreateLog): number {
       break;
     case "speech to text":
       // Assuming `response.usage.total_tokens` represents minutes for this example.
-      cost = (response?.usage?.total_tokens || 0) * 0.006;
+      cost = (characters || 0) * 0.006;
       break;
     case "image":
       cost = 0.04;

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Box,
-  Link,
   Stack,
   StackProps,
   Text,
@@ -12,8 +10,6 @@ import {
   AlertTitle,
   AlertDescription,
   Divider,
-  CircularProgress,
-  CircularProgressLabel,
   Switch,
   FormControl,
   FormLabel,
@@ -23,7 +19,7 @@ import {
 
 import { ShoppingItem } from "../api/airtable/Shopping";
 import { useKitchen } from "../KitchenContext";
-import VideoFeedComponent from "../components/VideoFeed";
+import ShoppingItemScan from "../components/ShoppingItemScan";
 
 export const ShoppingSideBar = (props: StackProps) => {
   const {
@@ -104,7 +100,7 @@ export const ShoppingSideBar = (props: StackProps) => {
   return (
     <Stack
       spacing={{ base: "1px", lg: "1" }}
-      px={{ lg: "3" }}
+      px={{ base: "4", lg: "3" }}
       py="3"
       {...props}
     >
@@ -142,8 +138,12 @@ export const ShoppingSideBar = (props: StackProps) => {
           </React.Fragment>
         )
       )}
-      {showScan && <VideoFeedComponent />}
-      <Button size={"sm"} onClick={() => setShowScan(!showScan)}>
+      {showScan && <ShoppingItemScan />}
+      <Button
+        display={{ base: "none", lg: "block" }}
+        size={"sm"}
+        onClick={() => setShowScan(!showScan)}
+      >
         {showScan ? "Hide" : "Show"} scan
       </Button>
     </Stack>

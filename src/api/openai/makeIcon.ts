@@ -15,8 +15,7 @@ async function generateImagesForKeyIngredient(
       prompt: prompt,
       n: 1,
       size: "1024x1024",
-      quality: "standard",
-      style: "natural",
+      quality: "hd",
     });
 
     createLog({ action: "createIcon", modelType: "image" });
@@ -59,16 +58,13 @@ async function updateRecipeWithImages(
 }
 
 // Main function to handle the image generation and updating process
-async function handleRecipeImageUpdate(
-  recipe: RecipeItem,
-  recipeId: string
-): Promise<void> {
+async function handleRecipeImageUpdate(recipe: RecipeItem): Promise<void> {
   try {
     // Generate images based on the recipe's key ingredient
     const imageUrls = await generateImagesForKeyIngredient(recipe);
 
     // Update the recipe record in Airtable with the generated images
-    await updateRecipeWithImages(recipeId, imageUrls);
+    await updateRecipeWithImages(recipe.id, imageUrls);
 
     console.log("Recipe updated successfully with images.");
   } catch (error) {

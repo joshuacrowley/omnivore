@@ -1,6 +1,6 @@
 import { airtable, Airtable, Select } from "./Airtable";
 import { FieldSet, Records, Attachment } from "airtable"; // Assuming FieldSet is available to import
-
+import { handleRecipeImageUpdate } from "../openai/makeIcon";
 // Define an interface for the Airtable record fields for the "Recipes" table
 interface RecipeItem {
   id: string;
@@ -135,6 +135,9 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
         meals: record.fields.meals as string[],
         shopping: record.fields.shopping as string[],
       };
+
+      await handleRecipeImageUpdate(newRecipe);
+
       console.log(`Created new recipe record ID: ${newRecipe.id}`);
 
       return newRecipe;
