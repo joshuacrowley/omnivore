@@ -46,7 +46,7 @@ Set it as `REACT_APP_ASSISTANT_ID` in .env.local.
 
 A good idea while we're still experimenting!
 
-### 6. Copy the Omnivore (v1) [Airtable Base](https://airtable.com/appdqcBRR3roXoUQd/shrWBkBRSTnR6xfZs) to your Airtable account
+### 6. Copy the Omnivore (v2) [Airtable Base](https://airtable.com/appEWC07PKUhR09uW/shr2u6Ulb9h4TCSqg) to your Airtable account
 
 ![Airtable base](./public/airtable-base.png)
 
