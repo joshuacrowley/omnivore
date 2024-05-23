@@ -9,96 +9,15 @@ import {
 
 import { mergeShopping } from "./mergeShopping";
 import { ShoppingItem } from "../airtable/Shopping";
+import { createLog } from "../airtable/Log";
 
 const shortRunSheet = {
   id: "recNN9OomyFTvYbap",
   fields: {
-    name: "Classic Vanilla Cake",
+    name: "Meal plan name...",
     runsheet: `### Preparation
-1. Preheat your oven to 350°F (175°C).
-2. Grease and flour your cake pan.
-
-### Special
-- Mixing bowl
-- Cake pan (9-inch round)
-- Electric mixer
-
-### Ingredients
-- 2 cups all-purpose flour
-- 1 cup sugar
-- 1/2 cup butter, softened 
-- 1 cup milk
-- 2 teaspoons baking powder 
-- 1 teaspoon vanilla extract 
-- 2 eggs
-
-### Running Time
-
-| Time | Task                                   |
-|------|------------------------------------------|
-| 0 min| Cream butter and sugar                   |
-| 10 min| Beat in eggs and vanilla                |
-| 15 min| Mix in flour and baking powder alternately with milk |
-| 25 min| Pour batter into pan and smooth top     |
-| 30 min| Bake in preheated oven                  |
-| 60 min| Remove from oven and cool               |
-          `,
-  },
-};
-
-const runSheet = {
-  id: "recNN9OomyFTvYbap",
-  fields: {
-    name: "Creamy Tomato Soup and Classic Vanilla Cake",
-    runsheet: `### Preparation
-1. 🅰 ️Preheat your oven to 350°F (175°C).
-2. 🅰 Grease and flour your cake pan.
-1. 🅱 ️Prepare all ingredients: Chop onions and garlic, measure out tomato juice and cream.
-2. 🅱 Preheat your large pot on the stove.
-
-### Special Equipment
-- 🅰 Large pot
-- 🅰 Blender or immersion blender
-- 🅱 Mixing bowl
-- 🅱 Cake pan (9-inch round)
-- 🅱 Electric mixer
-
-### Ingredients
-- 2 cups all-purpose flour
-- 1 cup sugar
-- 1/2 cup butter, softened 
-- 1 cup milk
-- 2 teaspoons baking powder 
-- 1 teaspoon vanilla extract 
-- 2 eggs
-
-### Running Time
-
-| Time | 🅰 Task                                      |
-|------|-------------------------------------------|
-| 0 min| Start sautéing onions and garlic          |
-| 5 min| Add tomato juice and bring to a boil      |
-| 20 min| Simmer and add salt and pepper           |
-
-
-| Time | 🅱 Task                                     |
-|------|------------------------------------------|
-| 0 min| Cream butter and sugar                   |
-| 10 min| Beat in eggs and vanilla                |
-| 15 min| Mix in flour and baking powder alternately with milk |
-| 25 min| Pour batter into pan and smooth top     |
-| 30 min| Bake in preheated oven                  |
-
-| Time | 🅰 Task                                |
-|------|------------------------------------------|
-| 25 min| Blend the soup until smooth              |
-| 30 min| Stir in heavy cream and heat through     |
-| 35 min| Serve garnished with basil               |
-
-| Time | 🅱 Task                                     |
-|------|------------------------------------------|
-| 60 min| Remove from oven and cool               |
-          `,
+1. Preheat your oven to 175°C.
+2. Grease and flour your cake pan.`,
   },
 };
 
@@ -210,13 +129,20 @@ async function updateRunsheet(recipe: RecipeItem, existingRunSheet: string) {
     messages: [
       {
         role: "system",
-        content: `
-        You are a helpful cooking assistant, writing a plan to help prepare multiple recipes.
+        content: `You are an expert chef that prepares a runsheet that involves multiple recipes for a meal. We are going to create a runsheet in markdown that helps us plan how we cook.
 
-        You will receive an existing plan that references a recipe, and all it's preparation steps and ingredients.
-        
-        Provide an updated plan for the cooking session which now factors in our new recipe.
+First, we need to assist the cook with gathering all the ingredients. Group them by the following categories, the fridge, the freezer, the pantry, the spice rack, the grocer. Use a emjoi for each recipe to help flag which recipe they belong too. You can omit categories if they're not relevant. 
 
+Next mention any special equipment required for each recipe.
+
+Next callout any special preparation that needs to be done ahead of time. You can use an Alert component for this.
+
+  <Alert status='warning'>
+    <AlertIcon />
+    Don't forget to marinate the meat the day before.
+  </Alert>
+
+Finally can you make a table titled "method" with a recipe in each column, and a row for each logical grouping of the recipe method and type of prep. Ensure the detail from the orginal recipe comes across in this table.
         You response must be a JSON object. What follows is the schema for the object you should return.
 
          ${JSON.stringify(shortRunSheet)}
@@ -231,6 +157,12 @@ async function updateRunsheet(recipe: RecipeItem, existingRunSheet: string) {
     ],
   });
 
+  createLog({
+    action: "updateRunSheet",
+    response: response,
+    modelType: "text",
+  });
+
   return response.choices[0].message; // Assuming the structure contains a 'message' with 'content'
 }
 
@@ -242,13 +174,26 @@ async function generateFreshRunsheet(recipe: RecipeItem) {
       {
         role: "system",
         content: `
-        You are a helpful cooking assistant, writing a plan to help prepare multiple recipes.
+        You are an expert chef that prepares a runsheet for a meal. We are going to create a runsheet in markdown that helps us plan how we cook.
 
-        You response must be a JSON object. What follows is an example of how to style your runsheet response with Markdown, and the properties of the JSON response. The content should not be included in your response as it's not marked as the existing runsheet.
+First, we need to assist the cook with gathering all the ingredients. Group them by the following categories, the fridge, the freezer, the pantry, the spice rack, the grocer. Use a emjoi for each recipe to help flag which recipe they belong too. You can omit categories if they're not relevant. 
 
-Please note this example shows the outputs from how two recipes, Creamy Tomato Soup and Classic Vanilla Cake were combined into a single runsheet. 
+Next mention any special equipment required for each recipe.
 
-               RUNSHEET EXAMPLE ${JSON.stringify(runSheet)}`,
+Next callout any special preparation that needs to be done ahead of time. You can use an Alert component for this.
+
+  <Alert status='warning'>
+    <AlertIcon />
+    Don't forget to marinate the meat the day before.
+  </Alert>
+
+Finally can you make a table titled "method" with a recipe in each column, and a row for each logical grouping of the recipe method and type of prep. Ensure the detail from the orginal recipe comes across in this table.
+        You response must be a JSON object. What follows is the schema for the object you should return.
+
+         ${JSON.stringify(shortRunSheet)}
+
+        The name property should include the new recipe and any existing recipes already listed in the runsheet details.
+                `,
       },
       {
         role: "user",
@@ -257,6 +202,12 @@ Please note this example shows the outputs from how two recipes, Creamy Tomato S
         )}`,
       },
     ],
+  });
+
+  createLog({
+    action: "newRunSheet",
+    response: response,
+    modelType: "text",
   });
 
   return response.choices[0].message; // Assuming the structure contains a 'message' with 'content'

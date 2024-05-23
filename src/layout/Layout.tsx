@@ -149,8 +149,6 @@ export const Layout = () => {
               </ColumnHeading>
             )}
 
-            {selectedNav === "Recipes" && <AddMeal />}
-
             {selectedNav !== "Shopping" && (
               <ColumnButton
                 onClick={sideBarDisclosure.onOpen}

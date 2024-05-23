@@ -32,7 +32,12 @@ const SpeakButton: React.FC<SpeakButtonProps> = ({ input, label }) => {
   };
 
   return (
-    <Button onClick={handleOnClick} rightIcon={<FiSpeaker />}>
+    <Button
+      variant={"outline"}
+      onClick={handleOnClick}
+      rightIcon={<FiSpeaker />}
+      size={{ base: "sm", lg: "md" }}
+    >
       {label}
     </Button>
   );

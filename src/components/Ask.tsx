@@ -102,8 +102,10 @@ const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
       {!recording && !transcribing && (
         <Button
           rightIcon={<FiMic />}
+          variant={"outline"}
           onClick={handleAskClick}
           disabled={asking || recording}
+          size={{ base: "sm", lg: "md" }}
         >
           Ask
         </Button>

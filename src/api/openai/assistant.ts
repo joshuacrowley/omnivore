@@ -70,12 +70,4 @@ async function updatedAssistant(assistant_id: string) {
   }
 }
 
-// const functionCallHandler = async (call) => {
-//   if (call?.function?.name !== "get_weather") return;
-//   const args = JSON.parse(call.function.arguments);
-//   const data = getWeather(args.location);
-//   setWeatherData(data);
-//   return JSON.stringify(data);
-// };
-
 export { updatedAssistant, getOrCreateVectorStore };

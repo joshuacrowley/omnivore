@@ -1,5 +1,6 @@
 import { openai } from "./OpenAi";
 import { addRecipe as addRecipeToAirtable } from "../airtable/Recipe";
+import { createLog } from "../airtable/Log";
 import { KitchenContextType } from "../../KitchenContext";
 
 // Function to create a prompt to send to the OpenAI API
@@ -15,26 +16,33 @@ async function addRecipe(prompt: string) {
                 ${prompt}
 
                 Can you make a json object we can use for the recipe.
-                Note how the fields ingredients and method use markdown.
-                
-                Remember the fields are name, ingredients, method and serves.
+                Note how the fields ingredients and method use MDX which is React + Markdown. Remember the fields are name, ingredients, method and serves.
 
-                      {"name": "Chocolate Brownies",
-      "ingredients": "- Butter | 2 sticks | Softened - Brown Sugar | 1 cup | - Sugar | 1/2 cup white | \n",
-      "method": "Mix together dry ingredients with wet ingredients slowly. - Chocolate Chips | 1 Cup | > Usually I add 2 cups...just because. Stir in ~1 cup or more of...",
+                I use the metric system, so please disregard temperatures in °F. So "350°F (175°C)" would become "175°C".
+
+                I'm dairy intolerant. If you see an ingredient I can't eat like  Butter or Milk can you add them to the query array. Here's a full example.
+                      
+                { "name": "Chocolate Brownies",
+      "ingredients": " 
+      - 2 sticks of **Butter**
+      - 1 cup of **Milk**
+      - 1 cup of **Brown Sugar**
+      - 1/2 cup of  **White sugar**
+      ",
+      "method": " 1. Mix together dry ingredients with wet ingredients slowly. 2. Stir in 1 cup or more of **brown sugar**...",
       "serves": 4}
-
-      Or by the way I can't have dairy, can you substitute?
-      
-      Can convert to metric 
-
-      name, not Title or Recipe title. It must be name.
                 `,
       },
     ],
   });
 
   console.log(response.choices[0]);
+
+  createLog({
+    action: "addRecipeViaText",
+    response: response,
+    modelType: "text",
+  });
 
   return response.choices[0];
 }

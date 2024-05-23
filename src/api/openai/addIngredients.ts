@@ -2,6 +2,7 @@ import { openai } from "./OpenAi";
 import { FieldSet, Record } from "airtable"; // Assuming you have airtable package installed
 import { airtable } from "../airtable/Airtable";
 import { ShoppingItem } from "../airtable/Shopping";
+import { createLog } from "../airtable/Log";
 
 // Extend FieldSet to ensure compatibility with Airtable's requirements
 interface ShoppingFields extends FieldSet {
@@ -37,6 +38,12 @@ async function generateShoppingList(prompt: string) {
                   }`,
       },
     ],
+  });
+
+  createLog({
+    action: "generateShoppingList",
+    response: response,
+    modelType: "text",
   });
 
   console.log(response.choices[0]);

@@ -1,4 +1,5 @@
 import { openai } from "./OpenAi";
+import { createLog } from "../airtable/Log";
 
 const speak = async (input: string) => {
   try {
@@ -9,6 +10,12 @@ const speak = async (input: string) => {
     });
 
     if (response.body) {
+      createLog({
+        characters: input.length,
+        action: "speak",
+        modelType: "text to speech",
+      });
+
       // Stream the response directly to a Blob
       const reader = response.body.getReader();
       const stream = new ReadableStream({

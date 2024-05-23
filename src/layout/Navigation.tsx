@@ -102,42 +102,36 @@ export const Navbar = (props: NavbarProps) => {
           <Stack spacing="3">
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
-              <NavLink icon={FiGithub} isExternal>
-                <Link
-                  href={`https://github.com/joshuacrowley/omnivore`}
-                  target={"_top"}
-                  isExternal
-                >
-                  GitHub
-                </Link>
+              <NavLink
+                icon={FiGithub}
+                isExternal
+                href={`https://github.com/joshuacrowley/omnivore`}
+              >
+                GitHub
               </NavLink>
-              <NavLink icon={FiCode} isExternal>
-                <Link
-                  href={`https://platform.openai.com/docs/introduction`}
-                  target={"_top"}
-                  isExternal
-                >
-                  OpenAI Docs
-                </Link>
+              <NavLink
+                icon={FiCode}
+                isExternal
+                href={`https://platform.openai.com/docs/introduction`}
+              >
+                OpenAI Docs
               </NavLink>
 
-              <NavLink icon={FiDatabase} isExternal>
-                <Link
-                  href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}`}
-                  target={"_top"}
-                  isExternal
-                >
-                  Airtable
-                </Link>
+              <NavLink
+                icon={FiDatabase}
+                isExternal
+                href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}`}
+                target={"_top"}
+              >
+                Airtable
               </NavLink>
-              <NavLink icon={FiBook} isExternal>
-                <Link
-                  href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}/api/docs`}
-                  target={"_top"}
-                  isExternal
-                >
-                  Airtable API
-                </Link>
+              <NavLink
+                icon={FiBook}
+                isExternal
+                href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}/api/docs`}
+                target={"_top"}
+              >
+                Airtable API
               </NavLink>
             </Stack>
           </Stack>
@@ -182,7 +176,7 @@ export const NavLink = (props: NavLinkProps) => {
       {...linkProps}
     >
       <HStack justify="space-between">
-        <HStack as="a" spacing="3">
+        <HStack spacing="3">
           <Icon as={icon} />
           <Text as="span" fontSize="sm" lineHeight="1.25rem">
             {props.children}

@@ -3,6 +3,7 @@ import { airtable } from "../airtable/Airtable";
 import { openai } from "./OpenAi";
 import { ShoppingItem } from "../airtable/Shopping";
 import { RecipeItem } from "../airtable/Recipe";
+import { createLog } from "../airtable/Log";
 
 // Function to create a prompt to send to the OpenAI API
 async function createPrompt(shopping: ShoppingItem[], recipe: RecipeItem) {
@@ -119,6 +120,8 @@ async function createPrompt(shopping: ShoppingItem[], recipe: RecipeItem) {
   });
 
   console.log(response.choices[0]);
+
+  createLog({ response: response, action: "mergeShopping", modelType: "text" });
 
   return response.choices[0];
 }
