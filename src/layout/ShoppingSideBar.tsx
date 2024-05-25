@@ -15,11 +15,13 @@ import {
   FormLabel,
   Button,
   Flex,
+  IconButton,
 } from "@chakra-ui/react";
-
+import { FiClipboard } from "react-icons/fi";
 import { ShoppingItem } from "../api/airtable/Shopping";
 import { useKitchen } from "../KitchenContext";
 import ShoppingItemScan from "../components/ShoppingItemScan";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export const ShoppingSideBar = (props: StackProps) => {
   const {
@@ -97,6 +99,14 @@ export const ShoppingSideBar = (props: StackProps) => {
     {} as Record<string, ShoppingItem[]>
   ); // Cast the initial value as the same type
 
+  // Prepare the shopping list string for clipboard, preserving order
+  const orderedItems = (
+    Object.entries(groupedItems) as [string, ShoppingItem[]][]
+  ).flatMap(([, items]) => items);
+  const shoppingListString = orderedItems
+    .map((item) => `${item.item} (${item.quantity})`)
+    .join("\n");
+
   return (
     <Stack
       spacing={{ base: "1px", lg: "1" }}
@@ -104,7 +114,7 @@ export const ShoppingSideBar = (props: StackProps) => {
       py="3"
       {...props}
     >
-      <Flex justifyContent={"space-between"}>
+      <Flex justifyContent={"space-between"} alignItems="center">
         <FormControl display="flex" alignItems="center" width={"auto"}>
           <FormLabel htmlFor="show-bought" mb="0">
             <Text fontSize="sm" my="4">
@@ -117,6 +127,13 @@ export const ShoppingSideBar = (props: StackProps) => {
             onChange={() => setShowBought(!showBought)}
           />
         </FormControl>
+        <CopyToClipboard text={shoppingListString}>
+          <IconButton
+            aria-label="Copy shopping list"
+            icon={<FiClipboard />}
+            size="sm"
+          />
+        </CopyToClipboard>
       </Flex>
       {(Object.entries(groupedItems) as [string, ShoppingItem[]][]).map(
         ([category, items]: [string, ShoppingItem[]], index: number) => (

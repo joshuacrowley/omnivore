@@ -29,7 +29,7 @@ function calculateCost(logData: CreateLog): number {
       cost = (characters || 0) * 0.006;
       break;
     case "image":
-      cost = 0.04;
+      cost = 0.08;
       break;
     case "text":
       cost =

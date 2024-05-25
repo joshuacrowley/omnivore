@@ -1,10 +1,14 @@
 import { openai } from "./OpenAi";
-import { updateRecipes, RecipeItem } from "../airtable/Recipe";
+import {
+  updateRecipes,
+  RecipeItem,
+  CreateRecipeItem,
+} from "../airtable/Recipe";
 import { createLog } from "../airtable/Log";
 
 // Function to generate images based on the key ingredient of a recipe
 async function generateImagesForKeyIngredient(
-  recipe: RecipeItem
+  recipe: CreateRecipeItem
 ): Promise<string[]> {
   let imageUrls: string[] = [];
   const prompt = `Decide the key ingredient most related to the recipe name, then create a screen print style image in black and white of that ingredient. Please do not include any text, and try and make the background plain white. Recipe details: ${recipe.name}, Ingredients: ${recipe.ingredients}`;
@@ -57,19 +61,19 @@ async function updateRecipeWithImages(
   }
 }
 
-// Main function to handle the image generation and updating process
-async function handleRecipeImageUpdate(recipe: RecipeItem): Promise<void> {
-  try {
-    // Generate images based on the recipe's key ingredient
-    const imageUrls = await generateImagesForKeyIngredient(recipe);
+// // Main function to handle the image generation and updating process
+// async function handleRecipeImageUpdate(recipe: RecipeItem): Promise<void> {
+//   try {
+//     // Generate images based on the recipe's key ingredient
+//     const imageUrls = await generateImagesForKeyIngredient(recipe);
 
-    // Update the recipe record in Airtable with the generated images
-    await updateRecipeWithImages(recipe.id, imageUrls);
+//     // Update the recipe record in Airtable with the generated images
+//     await updateRecipeWithImages(recipe.id, imageUrls);
 
-    console.log("Recipe updated successfully with images.");
-  } catch (error) {
-    console.error("Failed to update recipe with images:", error);
-  }
-}
+//     console.log("Recipe updated successfully with images.");
+//   } catch (error) {
+//     console.error("Failed to update recipe with images:", error);
+//   }
+// }
 
-export { handleRecipeImageUpdate };
+export { generateImagesForKeyIngredient };

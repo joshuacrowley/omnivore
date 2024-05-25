@@ -11,7 +11,7 @@ const RecipePhoto: React.FC<{ recipe: RecipeItem; boxSize: string }> = ({
 
   return (
     <Image
-      src={images[0].url || ""}
+      src={images[0]?.url || ""}
       alt={`${recipe.name} illustration`}
       borderRadius="full"
       boxSize={boxSize}

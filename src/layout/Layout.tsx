@@ -26,7 +26,6 @@ import { useKitchen } from "../KitchenContext"; // Update import path if necessa
 import { AddRecipe } from "../components/AddRecipe";
 import { AddShopping } from "../components/AddShopping";
 import { AddThread } from "../components/AddThread";
-import { AddMeal } from "../components/AddMeal";
 
 export const Layout = () => {
   const [sidebarIsScrolled, setSidebarIsScrolled] = useState(false);
@@ -97,8 +96,14 @@ export const Layout = () => {
           <DrawerOverlay />
           <DrawerContent>
             <Box height="full" overflowY="auto">
-              <ColumnHeader>
-                <ColumnHeading>{selectedNav}</ColumnHeading>
+              <ColumnHeader justifyContent={"space-between"}>
+                <ColumnHeading>
+                  <Flex direction={"row"} justifyContent={"space-between"}>
+                    {selectedNav}
+                  </Flex>
+                </ColumnHeading>
+                {selectedNav === "Recipes" && <AddRecipe />}
+                {selectedNav === "Chat" && <AddThread />}
               </ColumnHeader>
               {selectedNav === "Recipes" && (
                 <RecipeSidebar onClose={sideBarDisclosure.onClose} />
@@ -155,7 +160,7 @@ export const Layout = () => {
                 aria-label="All Recipes"
                 display={{ base: "inline-flex", md: "none" }}
               >
-                {`Change ${selectedNav}`}
+                {`All ${selectedNav}`}
               </ColumnButton>
             )}
           </HStack>

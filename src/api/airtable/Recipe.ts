@@ -1,6 +1,6 @@
 import { airtable, Airtable, Select } from "./Airtable";
 import { FieldSet, Records, Attachment } from "airtable"; // Assuming FieldSet is available to import
-import { handleRecipeImageUpdate } from "../openai/makeIcon";
+import { generateImagesForKeyIngredient } from "../openai/makeIcon";
 // Define an interface for the Airtable record fields for the "Recipes" table
 interface RecipeItem {
   id: string;
@@ -107,13 +107,16 @@ async function getRecipeById(recipeId: string): Promise<RecipeItem | null> {
  */
 async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
   try {
+    const imageUrls = await generateImagesForKeyIngredient(recipeData);
+
     // Convert recipeData to a more generic type compatible with Airtable's expected input
     const airtableData: FieldSet = {
       name: recipeData.name,
       ingredients: recipeData.ingredients,
       method: recipeData.method,
       serves: recipeData.serves,
-      photo: recipeData.photo, // Ensure this is formatted correctly for Airtable
+      //@ts-ignore
+      photo: imageUrls.map((url) => ({ url })),
       meals: recipeData.meals,
       shopping: recipeData.shopping,
     };
@@ -135,8 +138,6 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
         meals: record.fields.meals as string[],
         shopping: record.fields.shopping as string[],
       };
-
-      await handleRecipeImageUpdate(newRecipe);
 
       console.log(`Created new recipe record ID: ${newRecipe.id}`);
 
@@ -198,4 +199,4 @@ async function updateRecipes(
 // Export the function for use in other components
 export { getRecipes, getRecipeById, addRecipe, updateRecipes };
 
-export type { RecipeItem };
+export type { RecipeItem, CreateRecipeItem };
