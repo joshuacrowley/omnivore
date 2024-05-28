@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, useToast } from "@chakra-ui/react";
 import { useWhisper } from "@chengsokdara/use-whisper";
 import { FiMic, FiXOctagon } from "react-icons/fi";
-
+import { createLog } from "../api/airtable/Log";
 import { ask } from "../api/openai/ask";
 import speak from "../api/openai/speak";
 
@@ -13,6 +13,7 @@ interface AskProps {
 
 const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
   const [asking, setAsking] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
   const toast = useToast();
 
   const { recording, transcribing, startRecording, stopRecording, transcript } =
@@ -20,41 +21,24 @@ const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
       apiKey: process.env.REACT_APP_OPENAI_API_KEY,
     });
 
-  // Event handlers for keyboard
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "a" && !recording) {
-      if (shortCutActive) {
-        startRecording();
-        handleAskClick();
-      }
-    }
-  };
-
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "a" && recording) {
-      handleStopRecording();
-    }
-  };
-
-  // Add and remove event listeners for keyboard
-  // useEffect(() => {
-  //   document.addEventListener("keydown", handleKeyDown);
-  //   document.addEventListener("keyup", handleKeyUp);
-
-  //   return () => {
-  //     document.removeEventListener("keydown", handleKeyDown);
-  //     document.removeEventListener("keyup", handleKeyUp);
-  //   };
-  // }, [recording]); // Only re-run if 'recording' changes
-
   const handleAskClick = async () => {
     setAsking(true);
+    setStartTime(Date.now());
     startRecording();
   };
 
   const handleStopRecording = async () => {
     stopRecording();
     setAsking(false);
+
+    if (startTime) {
+      const duration = Math.round((Date.now() - startTime) / 1000); // Calculate duration in seconds
+      createLog({
+        action: "useWhisper",
+        seconds: duration,
+        modelType: "speech to text",
+      });
+    }
 
     try {
       // Send user message for completion

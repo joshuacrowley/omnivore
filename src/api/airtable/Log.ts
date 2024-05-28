@@ -14,10 +14,11 @@ interface CreateLog {
   modelType: "text to speech" | "speech to text" | "image" | "text" | "vision";
   cost?: number;
   characters?: number;
+  seconds?: number;
 }
 
 function calculateCost(logData: CreateLog): number {
-  const { modelType, response, characters } = logData;
+  const { modelType, response, characters, seconds } = logData;
   let cost = 0;
 
   switch (modelType) {
@@ -25,8 +26,7 @@ function calculateCost(logData: CreateLog): number {
       cost = cost = ((characters || 0) / 1_000_000) * 15.0;
       break;
     case "speech to text":
-      // Assuming `response.usage.total_tokens` represents minutes for this example.
-      cost = (characters || 0) * 0.006;
+      cost = (seconds || 0) * 0.0001;
       break;
     case "image":
       cost = 0.08;

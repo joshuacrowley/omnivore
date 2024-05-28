@@ -114,52 +114,62 @@ export const ShoppingSideBar = (props: StackProps) => {
       py="3"
       {...props}
     >
-      <Flex justifyContent={"space-between"} alignItems="center">
-        <FormControl display="flex" alignItems="center" width={"auto"}>
-          <FormLabel htmlFor="show-bought" mb="0">
-            <Text fontSize="sm" my="4">
-              Bought
-            </Text>
-          </FormLabel>
-          <Switch
-            id="show-bought"
-            isChecked={showBought}
-            onChange={() => setShowBought(!showBought)}
-          />
-        </FormControl>
-        <CopyToClipboard text={shoppingListString}>
-          <IconButton
-            aria-label="Copy shopping list"
-            icon={<FiClipboard />}
-            size="sm"
-          />
-        </CopyToClipboard>
-      </Flex>
-      {(Object.entries(groupedItems) as [string, ShoppingItem[]][]).map(
-        ([category, items]: [string, ShoppingItem[]], index: number) => (
-          <React.Fragment key={category}>
-            {index > 0 && <Divider />}
-            <Text fontSize="lg" fontWeight="bold" my="4">
-              {category}
-            </Text>
-            {items.map((item: ShoppingItem) => (
-              <Stack key={item.id} direction="row" align="center">
-                <Checkbox
-                  isChecked={item.bought}
-                  onChange={(e) => handleBoughtChange(item, e.target.checked)}
-                >
-                  {item.item} ({item.quantity})
-                </Checkbox>
-              </Stack>
-            ))}
-          </React.Fragment>
-        )
-      )}
+      <Stack
+        spacing={{ base: "1px", lg: "1" }}
+        px={{ base: "4", lg: "3" }}
+        py="3"
+        {...props}
+      >
+        <Flex justifyContent={"space-between"} alignItems="center">
+          <FormControl display="flex" alignItems="center" width={"auto"}>
+            <FormLabel htmlFor="show-bought" mb="0">
+              <Text fontSize="sm" my="4">
+                Bought
+              </Text>
+            </FormLabel>
+            <Switch
+              id="show-bought"
+              isChecked={showBought}
+              onChange={() => setShowBought(!showBought)}
+            />
+          </FormControl>
+          <CopyToClipboard text={shoppingListString}>
+            <IconButton
+              aria-label="Copy shopping list"
+              icon={<FiClipboard />}
+              size="sm"
+            />
+          </CopyToClipboard>
+        </Flex>
+        {(Object.entries(groupedItems) as [string, ShoppingItem[]][]).map(
+          ([category, items]: [string, ShoppingItem[]], index: number) => (
+            <React.Fragment key={category}>
+              {index > 0 && <Divider />}
+              <Text fontSize="lg" fontWeight="bold" my="4">
+                {category}
+              </Text>
+              {items.map((item: ShoppingItem) => (
+                <Stack key={item.id} direction="row" align="center">
+                  <Checkbox
+                    isChecked={item.bought}
+                    onChange={(e) => handleBoughtChange(item, e.target.checked)}
+                  >
+                    {item.item} ({item.quantity})
+                  </Checkbox>
+                </Stack>
+              ))}
+            </React.Fragment>
+          )
+        )}
+      </Stack>
+      <Divider />
+
       {showScan && <ShoppingItemScan />}
       <Button
         display={{ base: "none", lg: "block" }}
         size={"sm"}
         onClick={() => setShowScan(!showScan)}
+        my={5}
       >
         {showScan ? "Hide" : "Show"} scan
       </Button>
