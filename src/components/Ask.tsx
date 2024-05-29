@@ -14,6 +14,9 @@ interface AskProps {
 const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
   const [asking, setAsking] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [currentTranscript, setCurrentTranscript] = useState<string | null>(
+    null
+  );
   const toast = useToast();
 
   const { recording, transcribing, startRecording, stopRecording, transcript } =
@@ -21,16 +24,26 @@ const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
       apiKey: process.env.REACT_APP_OPENAI_API_KEY,
     });
 
+  useEffect(() => {
+    if (transcript.text && transcript.text !== currentTranscript) {
+      setCurrentTranscript(transcript.text);
+      handleTranscriptionComplete(transcript.text);
+    }
+  }, [transcript]);
+
   const handleAskClick = async () => {
     setAsking(true);
     setStartTime(Date.now());
+    setCurrentTranscript(null);
     startRecording();
   };
 
   const handleStopRecording = async () => {
     stopRecording();
     setAsking(false);
+  };
 
+  const handleTranscriptionComplete = async (transcriptText: string) => {
     if (startTime) {
       const duration = Math.round((Date.now() - startTime) / 1000); // Calculate duration in seconds
       createLog({
@@ -41,13 +54,18 @@ const Ask: React.FC<AskProps> = ({ questionContext, shortCutActive }) => {
     }
 
     try {
+      if (!transcriptText) {
+        throw new Error("No transcript available.");
+      }
+
+      console.log("ASK");
+
       // Send user message for completion
-      //@ts-ignore
-      const response = await ask(transcript.text, questionContext);
+      const response = await ask(transcriptText, questionContext);
 
       toast({
         title: "Question",
-        description: transcript.text,
+        description: transcriptText,
         status: "info",
         variant: "subtle",
         position: "top-right",

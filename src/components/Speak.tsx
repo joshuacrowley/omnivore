@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, useToast } from "@chakra-ui/react";
 import speak from "../api/openai/speak"; // Ensure this is the correct path to your speak function
 import { FiSpeaker } from "react-icons/fi";
@@ -9,16 +9,17 @@ interface SpeakButtonProps {
 }
 
 const SpeakButton: React.FC<SpeakButtonProps> = ({ input, label }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   const handleOnClick = async () => {
+    setIsLoading(true);
     try {
       await speak(input);
     } catch (error: unknown) {
-      // TypeScript treats error as `unknown` by default
       let message = "An unexpected error occurred";
       if (error instanceof Error) {
-        message = error.message; // Now we can safely access the `message` property
+        message = error.message;
       }
       toast({
         title: "Error",
@@ -28,6 +29,8 @@ const SpeakButton: React.FC<SpeakButtonProps> = ({ input, label }) => {
         isClosable: true,
         position: "bottom-left",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -37,6 +40,8 @@ const SpeakButton: React.FC<SpeakButtonProps> = ({ input, label }) => {
       onClick={handleOnClick}
       rightIcon={<FiSpeaker />}
       size={{ base: "sm", lg: "md" }}
+      isLoading={isLoading}
+      loadingText="Loading..."
     >
       {label}
     </Button>
