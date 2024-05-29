@@ -139,6 +139,21 @@ async function addRecipe(recipeData: CreateRecipeItem): Promise<RecipeItem> {
         shopping: record.fields.shopping as string[],
       };
 
+      fetch("/.netlify/functions/createRecipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRecipe),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
       console.log(`Created new recipe record ID: ${newRecipe.id}`);
 
       return newRecipe;
