@@ -28,6 +28,7 @@ export const AddMeal = () => {
   const {
     selectedRecipe,
     shoppingList,
+    fetchShoppingRecords,
     mealPlans,
     fetchMeals,
     handleNavSelection,
@@ -55,6 +56,7 @@ export const AddMeal = () => {
         isClosable: true,
       });
 
+      fetchShoppingRecords();
       await fetchMeals();
       handleNavSelection("Meal plan");
       onClose(); // Close the popover on success

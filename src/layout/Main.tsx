@@ -30,6 +30,7 @@ import {
 import { useKitchen } from "../KitchenContext";
 import SpeakButton from "../components/Speak";
 import Ask from "../components/Ask";
+
 import Markdown from "markdown-to-jsx";
 import RecipePhoto from "../components/RecipePhoto";
 import { ChatWrapper } from "../components/chat/ChatWrapper";
@@ -216,6 +217,7 @@ export const Main = (props: BoxProps) => {
                   questionContext={JSON.stringify(selectedMealPlan.runsheet)}
                   shortCutActive={shortCutActive}
                 />
+
                 <Divider />
                 <Markdown options={markdownOptions}>
                   {selectedMealPlan.runsheet ?? "No runsheet"}

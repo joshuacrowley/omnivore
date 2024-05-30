@@ -102,7 +102,7 @@ export const Navbar = (props: NavbarProps) => {
           <Stack spacing="3">
             <NavHeading>Help</NavHeading>
             <Stack spacing="1">
-              <NavLink
+              {/* <NavLink
                 icon={FiGithub}
                 isExternal
                 href={`https://github.com/joshuacrowley/omnivore`}
@@ -115,7 +115,7 @@ export const Navbar = (props: NavbarProps) => {
                 href={`https://platform.openai.com/docs/introduction`}
               >
                 OpenAI Docs
-              </NavLink>
+              </NavLink> */}
 
               <NavLink
                 icon={FiDatabase}
@@ -125,14 +125,14 @@ export const Navbar = (props: NavbarProps) => {
               >
                 Airtable
               </NavLink>
-              <NavLink
+              {/* <NavLink
                 icon={FiBook}
                 isExternal
                 href={`https://airtable.com/${process.env.REACT_APP_AIRTABLE_BASE}/api/docs`}
                 target={"_top"}
               >
                 Airtable API
-              </NavLink>
+              </NavLink> */}
             </Stack>
           </Stack>
         </Stack>
